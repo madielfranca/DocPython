@@ -2,14 +2,8 @@ import os
 import glob
 import pandas as pd
 
-# profile = os.environ["USERPROFILE"]
-# pathSharepoint = '{usr}\\{sharepoint}'.format(usr=profile,
-#                                               sharepoint='Globo Comunicação e Participações sa\\RPA Globo - Documentos\\General\\900Sustentacao\\60Robos\\P4345_ImoveisGeraçãodeGuiasIPTU')
-#
-# # input_path = glob.glob(pathSharepoint + '\\Input\\iptu.xlsx')
-
-input_path = "D:\gitlab-madielaadm\Automation Anywhere\Bots\Imoveis\P4375_GeraçãoDeGuiasIPTU\Docs\Input\controle_de_pagamento\modelo\IPTU CONTROLE DE PGTOS 2022 (RJ).xlsm"
-output_path = "D:\gitlab-madielaadm\Automation Anywhere\Bots\Imoveis\P4375_GeraçãoDeGuiasIPTU\Docs\Input\controle_de_pagamento"
+input_path = "C:\Users\Madiel\Documents"
+output_path = "C:\Users\Madiel\Documents\saida"
 
 def read_input(input_path, output_path):
     """
