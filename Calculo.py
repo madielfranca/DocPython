@@ -1,5 +1,5 @@
 a = 2
-c = 5
-s = a + c
+b = 5
+s = a + b
 
 print('A soma entre {} e {} é igual a {}!'.format(a,b,s))
