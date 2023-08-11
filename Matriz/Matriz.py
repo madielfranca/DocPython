@@ -11,7 +11,7 @@ for l in range(0, 3):
         if matriz[l][c] % 2 == 0:
             pares = pares + matriz[l][c]
     soma = soma + matriz[l][c]
-    print()
+    print(matriz[l][c])
 maior = max(matriz[1][0], matriz[1][1], matriz[1][2])
 print('=' * 30)
 print(f'A soma dos valores pares vale {pares}')
