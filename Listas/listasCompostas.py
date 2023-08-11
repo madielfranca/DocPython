@@ -14,9 +14,6 @@ while True:
     cont += 1
 
 print('x+'*30)
-print('x+'*30)
-print('x+'*30)
-print('x+'*30)
 print('Nº Nome          Média')
 print('-'*25)
 for pos, alun in enumerate(lista):
