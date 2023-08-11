@@ -1,3 +1,3 @@
 pessoa = [['pedro'],['19']]
 
-print(pessoa[1])
+print(pessoa)
