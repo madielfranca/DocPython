@@ -45,7 +45,7 @@ def P5225_techcosts():
     }
 
     #CONVERTENDO RESULTADO DA REQUISISÃO EM PANDAS
-    response = requests.get("""https://techcosts-payment-data-producer-api-uat.apps.globo-corp.6pzc.p1.openshiftapps.com/techcosts/payments/receipts/new""", headers=headers)
+    response = requests.get("""LInk_API""", headers=headers)
     json_data = json.loads(response.text)
     df = pandas.DataFrame(json_data)
 
@@ -62,13 +62,12 @@ def P5225_techcosts():
             nomeFatura = Path('./anexo/fatura.pdf')
 
             nota = requests.get(
-                f"https://techcosts-payment-data-producer-api-uat.apps.globo-corp.6pzc.p1.openshiftapps.com/techcosts/payments/receipts/{id}/attachment/1",
+                f"LInk_API",
                 headers=headers)
 
             fatura = requests.get(
-                f"https://techcosts-payment-data-producer-api-uat.apps.globo-corp.6pzc.p1.openshiftapps.com/techcosts/payments/receipts/{id}/attachment/2",
+                f"LInk_API",
                 headers=headers)
-
 
             responseNota = nota
             nomeNota.write_bytes(responseNota.content)
