@@ -18,3 +18,5 @@ print(aluno)
 for k, v in aluno.items():
     print(f'{k} é {v}')
 print('-+' * 30)
+
+
