@@ -17,3 +17,4 @@ def contador(i,f,p):
     print('fim!')
 
 contador(2,10,2)
+print('tese')
