@@ -1,6 +1,6 @@
 import pandas as pd
 import math
-
+from openpyxl import load_workbook
 
 df_carga = pd.read_excel('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/PROJETO CARGA.xlsm', sheet_name='GL_SEGMENT_VALUES_INTERFACE')
 df_hierarquia = pd.read_excel('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', sheet_name='GL_SEGMENT_HIER_INTERFACE', header=0)
@@ -86,10 +86,10 @@ for row in df_carga.index:
                                             df_hierarquia.at[indice[0], 'Unnamed: 34'] = valores_projeto_carga
                                         else:
                                             df_hierarquia.at[indice[0], 'Unnamed: 33'] = valores_projeto_carga
-                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 0'] = setCode
-                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 1'] = treeCode
-                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 2'] = treeCodeVersion
-                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 3'] = treeCodeVersionDate
+                                        # df_hierarquia.at[indice[0]+1, 'Unnamed: 0'] = setCode
+                                        # df_hierarquia.at[indice[0]+1, 'Unnamed: 1'] = treeCode
+                                        # df_hierarquia.at[indice[0]+1, 'Unnamed: 2'] = treeCodeVersion
+                                        # df_hierarquia.at[indice[0]+1, 'Unnamed: 3'] = treeCodeVersionDate
 
                                         break
                                     else:
@@ -144,10 +144,10 @@ for row in df_carga.index:
                                                         df_hierarquia.at[indice[0]-2, 'Unnamed: 34'] = valores_projeto_carga
                                                     else:
                                                         df_hierarquia.at[indice[0], 'Unnamed: 34'] = valores_projeto_carga
-                                                        df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
-                                                        df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
-                                                        df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
-                                                        df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
+                                                        # df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
+                                                        # df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
+                                                        # df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
+                                                        # df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
 
                                                     break
                                                 elif ultimos_tres_caracteres_carga < ultimos_tres_caracteres_ColValue and comparaCaractereP1 == comparaCaractereP2:
@@ -164,47 +164,13 @@ for row in df_carga.index:
                                                     df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]], nova_linha, df_hierarquia.iloc[indice[0]:]], ignore_index=True)
                                                     if primeira_letra.startswith(('C')): 
                                                         df_hierarquia.at[indice[0], 'Unnamed: 34'] = valores_projeto_carga
-                                                        df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
-                                                        df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
-                                                        df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
-                                                        df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
+                                                        # df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
+                                                        # df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
+                                                        # df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
+                                                        # df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
                                                     break
                                         # breakpoint()
                                         break
-                                           
-                                      
-                                        
-                                        
-                                        # print(ultimos_tres_caracteres_carga) 
-                                        # print(ultimos_tres_caracteres_ColValue) 
-                                        # print(ColValue) 
-                                        # if ultimos_tres_caracteres_carga == ultimos_tres_caracteres_ColValue:
-                                        #     print("O projeto duplicado.", valores_projeto_carga)
-                                        #     break
-                                        # if ultimos_tres_caracteres_carga < ultimos_tres_caracteres_ColValue:
-                                        #     print('Projeto Incluido com sucesso') 
-                                        #     print(i) 
-                                        #     print(ultimos_tres_caracteres_ColValue) 
-                                        #     print(ultimos_tres_caracteres_carga) 
-                                        #     breakpoint()
-                                        #     print("Projeto Incluido com sucesso.", valores_projeto_carga)
-
-                                        #     # Encontre o índice do valor na coluna ''Unnamed: 35''
-                                        #     indice = df_hierarquia.index[df_hierarquia['Unnamed: 33'] == ColValue].tolist()
-                                            
-                                        #     df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]], nova_linha, df_hierarquia.iloc[indice[0]:]], ignore_index=True)
-                                        #     if primeira_letra.startswith(('C')): 
-                                        #         df_hierarquia.at[indice[0], 'Unnamed: 34'] = valores_projeto_carga
-                                        #     else:
-                                        #         df_hierarquia.at[indice[0], 'Unnamed: 33'] = valores_projeto_carga
-                                        #         df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
-                                        #         df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
-                                        #         df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
-                                        #         df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
-
-                                        #     break
-
-            
                                     else:
                                         ultimos_tres_caracteres_carga = valores_projeto_carga[-4:]
                                         ultimos_tres_caracteres_carga = int(ultimos_tres_caracteres_carga)
@@ -230,13 +196,12 @@ for row in df_carga.index:
                                                 df_hierarquia.at[indice[0], 'Unnamed: 34'] = valores_projeto_carga
                                             else:
                                                 df_hierarquia.at[indice[0], 'Unnamed: 33'] = valores_projeto_carga
-                                                df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
-                                                df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
-                                                df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
-                                                df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
+                                                # df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
+                                                # df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
+                                                # df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
+                                                # df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
 
                                             break
-
 
         else:
             print("O projeto" ,valores_projeto_carga, "não posui quantidade de letras validas.")
@@ -244,10 +209,39 @@ for row in df_carga.index:
         if valores_projeto_carga != "nan" and valores_projeto_carga != "*Value":
             print("O projeto", valores_projeto_carga, " não possui letras validas, quantidade de letras .",quantidade_caracteres) 
 
-    
+# df_hierarquia = df_hierarquia.drop([0, 1])
 
-nome_arquivo = 'HierarquiaDeProjetos.xlsx'
-df_hierarquia.to_excel(nome_arquivo, index=False, header=None )
+
+# Abre o arquivo Excel existente
+arquivo_excel = 'PP.OO.9.100 - Hierarquia de Projetos.xlsm'
+
+# Carrega o arquivo Excel existente
+book = load_workbook(arquivo_excel)
+
+# Carrega o DataFrame novo com os dados que deseja atualizar
+df_novo = df_hierarquia
+
+# Carrega o workbook existente
+book = load_workbook(arquivo_excel)
+
+# Adiciona ou atualiza a planilha
+with pd.ExcelWriter(arquivo_excel, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
+    writer.book = book
+    
+    # Especifica a planilha a ser atualizada
+    df_novo.to_excel(writer, sheet_name='GL_SEGMENT_HIER_INTERFACE', index=False)
+
+# Salva o workbook atualizado
+book.save(arquivo_excel)
+
+# # Selecionar apenas as colunas 'A', 'C', e 'D'
+# selected_columns = ['Unnamed: 32', 'Unnamed: 33', 'Unnamed: 34', 'Unnamed: 35']
+# df_selected = df_hierarquia[selected_columns]
+
+
+# nome_arquivo = 'HierarquiaDeProjetos13.xlsx'
+# df_selected.to_excel(nome_arquivo, index=False, header=None )
+
 
 
             

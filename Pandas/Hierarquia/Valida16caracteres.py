@@ -1,4 +1,5 @@
 import pandas as pd
+from openpyxl import load_workbook
 
 df_carga = pd.read_excel('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/PROJETO CARGA.xlsm', sheet_name='GL_SEGMENT_VALUES_INTERFACE')
 df_hierarquia = pd.read_excel('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', sheet_name='GL_SEGMENT_HIER_INTERFACE', header=0)
@@ -73,10 +74,10 @@ for row in df_carga.index:
                                             df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]+1], nova_linha, df_hierarquia.iloc[indice[0]+1:]], ignore_index=True)
                                             
                                             df_hierarquia.at[indice[0]+1, 'Unnamed: 35'] = valores_projeto_carga
-                                            df_hierarquia.at[indice[0]+1, 'Unnamed: 0'] = setCode
-                                            df_hierarquia.at[indice[0]+1, 'Unnamed: 1'] = treeCode
-                                            df_hierarquia.at[indice[0]+1, 'Unnamed: 2'] = treeCodeVersion
-                                            df_hierarquia.at[indice[0]+1, 'Unnamed: 3'] = treeCodeVersionDate
+                                            # df_hierarquia.at[indice[0]+1, 'Unnamed: 0'] = setCode
+                                            # df_hierarquia.at[indice[0]+1, 'Unnamed: 1'] = treeCode
+                                            # df_hierarquia.at[indice[0]+1, 'Unnamed: 2'] = treeCodeVersion
+                                            # df_hierarquia.at[indice[0]+1, 'Unnamed: 3'] = treeCodeVersionDate
 
                                             break
                                         else:
@@ -109,10 +110,10 @@ for row in df_carga.index:
                                         df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]], nova_linha, df_hierarquia.iloc[indice[0]:]], ignore_index=True)
                                         
                                         df_hierarquia.at[indice[0], 'Unnamed: 35'] = valores_projeto_carga
-                                        df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
-                                        df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
-                                        df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
-                                        df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
+                                        # df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
+                                        # df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
+                                        # df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
+                                        # df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
 
                                         break
 
@@ -125,9 +126,35 @@ for row in df_carga.index:
             print("O projeto", valores_projeto_carga, " não possui letras validas, quantidade de letras .",quantidade_caracteres) 
 
     
+df_hierarquia = df_hierarquia.drop([0, 1, 2])
 
-nome_arquivo = 'HierarquiaDeProjetos.xlsx'
-df_hierarquia.to_excel(nome_arquivo, index=False, header=None )
+# Caminho para o arquivo Excel existente
+arquivo_excel = 'PP.OO.9.100 - Hierarquia de Projetos.xlsm'
+
+# Carrega o DataFrame novo com os dados que deseja atualizar
+df_novo = df_hierarquia
+
+# Carrega o workbook existente
+book = load_workbook(arquivo_excel, keep_vba=True)
+
+# Seleciona a planilha a ser atualizada
+sheet_name = 'GL_SEGMENT_HIER_INTERFACE'
+if sheet_name not in book.sheetnames:
+    raise ValueError(f"A planilha {sheet_name} não existe no arquivo Excel")
+
+sheet = book[sheet_name]
+
+# A linha onde os dados novos devem começar (abaixo da linha 4)
+start_row = 5
+
+# Atualiza as células abaixo da linha 4 com os dados do DataFrame
+for row_index, row in df_novo.iterrows():
+    for col_index, value in enumerate(row):
+        cell = sheet.cell(row=start_row + row_index, column=col_index + 1)
+        cell.value = value
+
+# Salva o workbook atualizado
+book.save(arquivo_excel)
 
 
             
