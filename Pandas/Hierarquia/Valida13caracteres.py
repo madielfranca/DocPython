@@ -209,41 +209,38 @@ for row in df_carga.index:
         if valores_projeto_carga != "nan" and valores_projeto_carga != "*Value":
             print("O projeto", valores_projeto_carga, " não possui letras validas, quantidade de letras .",quantidade_caracteres) 
 
-# df_hierarquia = df_hierarquia.drop([0, 1])
-
-
-# Abre o arquivo Excel existente
+# Caminho para o arquivo Excel existente
 arquivo_excel = 'PP.OO.9.100 - Hierarquia de Projetos.xlsm'
-
-# Carrega o arquivo Excel existente
-book = load_workbook(arquivo_excel)
 
 # Carrega o DataFrame novo com os dados que deseja atualizar
 df_novo = df_hierarquia
 
-# Carrega o workbook existente
-book = load_workbook(arquivo_excel)
+df_novo = df_novo.iloc[3:].reset_index(drop=True)
 
-# Adiciona ou atualiza a planilha
-with pd.ExcelWriter(arquivo_excel, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
-    writer.book = book
-    
-    # Especifica a planilha a ser atualizada
-    df_novo.to_excel(writer, sheet_name='GL_SEGMENT_HIER_INTERFACE', index=False)
+# Carrega o workbook existente
+book = load_workbook(arquivo_excel, keep_vba=True)
+
+# Seleciona a planilha a ser atualizada
+sheet_name = 'GL_SEGMENT_HIER_INTERFACE'
+if sheet_name not in book.sheetnames:
+    raise ValueError(f"A planilha {sheet_name} não existe no arquivo Excel")
+
+sheet = book[sheet_name]
+
+# A linha onde os dados novos devem começar (abaixo da linha 4)
+start_row = 5
+
+# Atualiza as células abaixo da linha 4 com os dados do DataFrame
+for row_index, row in df_novo.iterrows():
+    for col_index, value in enumerate(row):
+        cell = sheet.cell(row=start_row + row_index, column=col_index + 1)
+        cell.value = value
 
 # Salva o workbook atualizado
 book.save(arquivo_excel)
 
-# # Selecionar apenas as colunas 'A', 'C', e 'D'
-# selected_columns = ['Unnamed: 32', 'Unnamed: 33', 'Unnamed: 34', 'Unnamed: 35']
-# df_selected = df_hierarquia[selected_columns]
 
-
-# nome_arquivo = 'HierarquiaDeProjetos13.xlsx'
-# df_selected.to_excel(nome_arquivo, index=False, header=None )
-
-
-
+            
             
 
        

@@ -125,14 +125,14 @@ for row in df_carga.index:
         if valores_projeto_carga != "nan" and valores_projeto_carga != "*Value":
             print("O projeto", valores_projeto_carga, " não possui letras validas, quantidade de letras .",quantidade_caracteres) 
 
-    
-df_hierarquia = df_hierarquia.drop([0, 1, 2])
 
 # Caminho para o arquivo Excel existente
 arquivo_excel = 'PP.OO.9.100 - Hierarquia de Projetos.xlsm'
 
 # Carrega o DataFrame novo com os dados que deseja atualizar
 df_novo = df_hierarquia
+
+df_novo = df_novo.iloc[3:].reset_index(drop=True)
 
 # Carrega o workbook existente
 book = load_workbook(arquivo_excel, keep_vba=True)
