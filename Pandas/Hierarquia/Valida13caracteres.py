@@ -56,6 +56,7 @@ for row in df_carga.index:
                             indice_insercao = row
                             ultimoItem = None
                             contador = 0
+                            ColValueP2 = 0
        
                             for i in range(row, len(df_hierarquia)):  
                                 if primeira_letra.startswith(('C')): 
@@ -86,10 +87,10 @@ for row in df_carga.index:
                                             df_hierarquia.at[indice[0], 'Unnamed: 34'] = valores_projeto_carga
                                         else:
                                             df_hierarquia.at[indice[0], 'Unnamed: 33'] = valores_projeto_carga
-                                        # df_hierarquia.at[indice[0]+1, 'Unnamed: 0'] = setCode
-                                        # df_hierarquia.at[indice[0]+1, 'Unnamed: 1'] = treeCode
-                                        # df_hierarquia.at[indice[0]+1, 'Unnamed: 2'] = treeCodeVersion
-                                        # df_hierarquia.at[indice[0]+1, 'Unnamed: 3'] = treeCodeVersionDate
+                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 0'] = setCode
+                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 1'] = treeCode
+                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 2'] = treeCodeVersion
+                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 3'] = treeCodeVersionDate
 
                                         break
                                     else:
@@ -144,10 +145,10 @@ for row in df_carga.index:
                                                         df_hierarquia.at[indice[0]-2, 'Unnamed: 34'] = valores_projeto_carga
                                                     else:
                                                         df_hierarquia.at[indice[0], 'Unnamed: 34'] = valores_projeto_carga
-                                                        # df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
-                                                        # df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
-                                                        # df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
-                                                        # df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
+                                                        df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
+                                                        df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
+                                                        df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
+                                                        df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
 
                                                     break
                                                 elif ultimos_tres_caracteres_carga < ultimos_tres_caracteres_ColValue and comparaCaractereP1 == comparaCaractereP2:
@@ -164,44 +165,87 @@ for row in df_carga.index:
                                                     df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]], nova_linha, df_hierarquia.iloc[indice[0]:]], ignore_index=True)
                                                     if primeira_letra.startswith(('C')): 
                                                         df_hierarquia.at[indice[0], 'Unnamed: 34'] = valores_projeto_carga
-                                                        # df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
-                                                        # df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
-                                                        # df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
-                                                        # df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
+                                                        df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
+                                                        df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
+                                                        df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
+                                                        df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
                                                     break
-                                        # breakpoint()
                                         break
                                     else:
-                                        ultimos_tres_caracteres_carga = valores_projeto_carga[-4:]
-                                        ultimos_tres_caracteres_carga = int(ultimos_tres_caracteres_carga)
+                                        for c in range(row, len(df_hierarquia)): 
+                                            ColValue = df_hierarquia.at[c-1, 'Unnamed: 33']
+                                            # if valores_projeto_carga == 'PESP000016003':
+                                            #     print(valores_projeto_carga)
+                                            #     print(ColValue)
+                                            #     print(c)
+                                            #     breakpoint()
+                                            if not (ColValue is None or (isinstance(ColValue, float) and math.isnan(ColValue))):
+                                                # Se my_var não for None, execute o código aqui
+                                                # print("my_var tem um valor válido:", ColValue)
+                                                ultimos_tres_caracteres_carga = valores_projeto_carga[-5:]
+                                                ultimos_tres_caracteres_carga = int(ultimos_tres_caracteres_carga)
 
-                                        ultimos_tres_caracteres_parent1Hierarquia = parent1Hierarquia[-4:]
-                                        ultimos_tres_caracteres_parent1Hierarquia = int(ultimos_tres_caracteres_parent1Hierarquia)
+                                                ultimos_tres_caracteres_ColValue = ColValue[-5:]
+                                                ultimos_tres_caracteres_ColValue = int(ultimos_tres_caracteres_ColValue)
 
-                                        ultimos_tres_caracteres_ColValue = ColValue[-4:]
-                                        ultimos_tres_caracteres_ColValue = int(ultimos_tres_caracteres_ColValue)
+                                                comparaCaractereP1 = valores_projeto_carga[:-3]
+                                                comparaCaractereP2 = ColValue[:-3]
+                                                # print(validaColValue) 
+                                                # print(ultimos_tres_caracteres_ColValue) 
+                                                # print(ultimos_tres_caracteres_carga) 
+                                                # print(ultimos_tres_caracteres_ColValue) 
+                                                # print('---------') 
+                                                #Guarda o penultimo valor da hierarquia 
+                                                if validaColValue < ultimos_tres_caracteres_ColValue and ultimos_tres_caracteres_carga > ultimos_tres_caracteres_ColValue:
+                                                    validaColValue = ultimos_tres_caracteres_ColValue 
+                                                    ColValueP2 = ColValue 
+                 
+                                                # print(comparaCaractereP1) 
+                                                # print(comparaCaractereP2)
+                                                # print(ultimos_tres_caracteres_carga) 
+                                                # print(ultimos_tres_caracteres_ColValue) 
+                                                if ultimos_tres_caracteres_carga == ultimos_tres_caracteres_ColValue:
+                                                    print("O projeto duplicado.", valores_projeto_carga)
+                                                    
+                                                    break
+                                         
+                                                if ultimos_tres_caracteres_carga < ultimos_tres_caracteres_ColValue and comparaCaractereP1 != comparaCaractereP2:
+                                                    # Encontre o índice do valor na coluna ''Unnamed: 35''
+                                                    indice = df_hierarquia.index[df_hierarquia['Unnamed: 33'] == ColValue].tolist()
+                                                    print('passou') 
+                                                    print(comparaCaractereP1) 
+                                                    print(comparaCaractereP2) 
+                                                    print(indice) 
+                                                    # breakpoint()
+                                                    
+                                                    df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]-1], nova_linha, df_hierarquia.iloc[indice[0]-1:]], ignore_index=True)
+                                                    df_hierarquia.at[indice[0]-1, 'Unnamed: 33'] = valores_projeto_carga
+                                                    df_hierarquia.at[indice[0]-1, 'Unnamed: 0'] = setCode
+                                                    df_hierarquia.at[indice[0]-1, 'Unnamed: 1'] = treeCode
+                                                    df_hierarquia.at[indice[0]-1, 'Unnamed: 2'] = treeCodeVersion
+                                                    df_hierarquia.at[indice[0]-1, 'Unnamed: 3'] = treeCodeVersionDate
 
-                                        if ultimos_tres_caracteres_carga == ultimos_tres_caracteres_ColValue:
-                                            print("O projeto duplicado.", valores_projeto_carga)
-                                            break
-
-                                        if ultimos_tres_caracteres_carga < ultimos_tres_caracteres_ColValue:
-                                            print("Projeto Incluido com sucesso.", valores_projeto_carga)
-
-                                            # Encontre o índice do valor na coluna ''Unnamed: 35''
-                                            indice = df_hierarquia.index[df_hierarquia['Unnamed: 33'] == ColValue].tolist()
-                                            
-                                            df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]], nova_linha, df_hierarquia.iloc[indice[0]:]], ignore_index=True)
-                                            if primeira_letra.startswith(('C')): 
-                                                df_hierarquia.at[indice[0], 'Unnamed: 34'] = valores_projeto_carga
-                                            else:
-                                                df_hierarquia.at[indice[0], 'Unnamed: 33'] = valores_projeto_carga
-                                                # df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
-                                                # df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
-                                                # df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
-                                                # df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
-
-                                            break
+                                                    break
+                                                elif ultimos_tres_caracteres_carga < ultimos_tres_caracteres_ColValue and comparaCaractereP1 == comparaCaractereP2:
+                                                    indice = df_hierarquia.index[df_hierarquia['Unnamed: 33'] == ColValue].tolist()
+                                                    print(valores_projeto_carga)
+                                                    print(ColValue)
+                                                    print(c)
+                                                    print(ultimos_tres_caracteres_carga)  
+                                                    print(ultimos_tres_caracteres_ColValue)  
+                                                    print('else') 
+                                                    print(indice) 
+                                                    print(comparaCaractereP1) 
+                                                    print(comparaCaractereP2) 
+                                                    # breakpoint()  
+                                                    df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]], nova_linha, df_hierarquia.iloc[indice[0]:]], ignore_index=True)
+                                                    df_hierarquia.at[indice[0], 'Unnamed: 33'] = valores_projeto_carga
+                                                    df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
+                                                    df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
+                                                    df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
+                                                    df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
+                                                    break
+                                        break
 
         else:
             print("O projeto" ,valores_projeto_carga, "não posui quantidade de letras validas.")

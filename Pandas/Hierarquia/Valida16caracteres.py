@@ -45,8 +45,6 @@ for row in df_carga.index:
                             quantidade_caracteres = len(valores_projeto_carga)
                             quantidade_caracteresP1 = len(qtCaracteresParent1)
 
-
-                            # quantidade_caracteres
                             if quantidade_caracteres == 16:
                                 # Define o índice onde deseja inserir a linha em branco
                                 nova_linha = pd.DataFrame([[None] * len(df_hierarquia.columns)], columns=df_hierarquia.columns)
@@ -74,10 +72,10 @@ for row in df_carga.index:
                                             df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]+1], nova_linha, df_hierarquia.iloc[indice[0]+1:]], ignore_index=True)
                                             
                                             df_hierarquia.at[indice[0]+1, 'Unnamed: 35'] = valores_projeto_carga
-                                            # df_hierarquia.at[indice[0]+1, 'Unnamed: 0'] = setCode
-                                            # df_hierarquia.at[indice[0]+1, 'Unnamed: 1'] = treeCode
-                                            # df_hierarquia.at[indice[0]+1, 'Unnamed: 2'] = treeCodeVersion
-                                            # df_hierarquia.at[indice[0]+1, 'Unnamed: 3'] = treeCodeVersionDate
+                                            df_hierarquia.at[indice[0]+1, 'Unnamed: 0'] = setCode
+                                            df_hierarquia.at[indice[0]+1, 'Unnamed: 1'] = treeCode
+                                            df_hierarquia.at[indice[0]+1, 'Unnamed: 2'] = treeCodeVersion
+                                            df_hierarquia.at[indice[0]+1, 'Unnamed: 3'] = treeCodeVersionDate
 
                                             break
                                         else:
@@ -110,10 +108,10 @@ for row in df_carga.index:
                                         df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]], nova_linha, df_hierarquia.iloc[indice[0]:]], ignore_index=True)
                                         
                                         df_hierarquia.at[indice[0], 'Unnamed: 35'] = valores_projeto_carga
-                                        # df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
-                                        # df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
-                                        # df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
-                                        # df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
+                                        df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
+                                        df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
+                                        df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
+                                        df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
 
                                         break
 
