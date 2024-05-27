@@ -1,0 +1,24 @@
+mode: DEV
+nome_processo: HierarquiaDeProjetos
+process_name: HierarquiaDeProjetos
+tag_processo: P5494
+area: Finanças Corporativas
+ 
+prd:
+  teste: teste
+ 
+hml:
+  teste: teste
+ 
+dev:
+  numeros_aceitos: teste
+ 
+folders:
+  error_path: Error Folder
+  logs_path: Error Folder/Logs
+  snapshots_path: Error Folder/Snapshots
+  input_path: Input
+  procs_path: Procs
+  works_path: Works
+  output_path: Output
+  params_path: Params

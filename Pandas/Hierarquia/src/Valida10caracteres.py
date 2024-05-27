@@ -2,8 +2,8 @@ import pandas as pd
 import math
 from openpyxl import load_workbook
 
-df_carga = pd.read_excel('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/PROJETO CARGA.xlsm', sheet_name='GL_SEGMENT_VALUES_INTERFACE')
-df_hierarquia = pd.read_excel('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', sheet_name='GL_SEGMENT_HIER_INTERFACE', header=0)
+df_carga = pd.read_excel('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/PROJETO CARGA.xlsm', sheet_name='GL_SEGMENT_VALUES_INTERFACE')
+df_hierarquia = pd.read_excel('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia de Projetos.xlsm', sheet_name='GL_SEGMENT_HIER_INTERFACE', header=0)
 
 for row in df_carga.index:
     #Verifica se o nome da coluna é 'Unnamed'
@@ -34,21 +34,16 @@ for row in df_carga.index:
                         parent1Hierarquia = df_hierarquia['AJ'][row]
                  
                     parent1Hierarquia = str(parent1Hierarquia)
-                    qtCaracteresParent1 = valores_projeto_carga[:-3]
-
-                    if primeira_letra.startswith(('C')):
-                        qtCaracteresParent1 = valores_projeto_carga[:-3]
-
-                    # Verificando se o parent 3 existe
-                    if parent1Hierarquia == qtCaracteresParent1:
+                    qtCaracteresParent1 = valores_projeto_carga
   
-                        # Verificando se a string começa com as letras P, E, I ou O
+                    if parent1Hierarquia == qtCaracteresParent1:      
                         
                         quantidade_caracteres = len(valores_projeto_carga)
                         quantidade_caracteresP1 = len(qtCaracteresParent1)
 
+                    
                         # quantidade_caracteres
-                        if quantidade_caracteres == 13:
+                        if quantidade_caracteres == 10:
                             # Define o índice onde deseja inserir a linha em branco
                             nova_linha = pd.DataFrame([[None] * len(df_hierarquia.columns)], columns=df_hierarquia.columns)
 
@@ -57,14 +52,26 @@ for row in df_carga.index:
                             ultimoItem = None
                             contador = 0
                             ColValueP2 = 0
-       
-                            for i in range(row, len(df_hierarquia)):  
-                                if primeira_letra.startswith(('C')): 
-                                    ColValue = df_hierarquia.at[i-1, 'Unnamed: 33']
-                                else:
-                                    ColValue = df_hierarquia.at[i-1, 'Unnamed: 33']
-                                minha_lista.append(ColValue)
 
+                            for i in range(row, len(df_hierarquia)): 
+                                # print(row) 
+                                if primeira_letra.startswith(('C')): 
+                                        ColValue = df_hierarquia.at[i, 'Unnamed: 32']
+                                else:
+                                    ColValue = df_hierarquia.at[i, 'Unnamed: 32']
+                                minha_lista.append(ColValue)
+                                # print(minha_lista)
+                                                            
+                                print('foi')
+                                print(valores_projeto_carga)
+                                print(parent1Hierarquia)
+                                print(qtCaracteresParent1)
+                                print(ColValue)
+                                print(i)
+                                print(row)
+                                breakpoint()
+       
+                             
                                 if not isinstance(ColValue, str) or ColValue == "nan":
                                     
                                     if  contador > 0: 
@@ -74,7 +81,7 @@ for row in df_carga.index:
                                         ultimo_valor = lista_sem_ultima[-1]
 
                                         # Encontre o índice do valor na coluna ''Unnamed: 35''
-                                        indice = df_hierarquia.index[df_hierarquia['Unnamed: 33'] == ultimo_valor].tolist()
+                                        indice = df_hierarquia.index[df_hierarquia['Unnamed: 32'] == ultimo_valor].tolist()
                                         
                                         df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]+1], nova_linha, df_hierarquia.iloc[indice[0]+1:]], ignore_index=True)
                                         
@@ -84,9 +91,9 @@ for row in df_carga.index:
                                             if ultimos_tres_caracteres_carga == ultimos_tres_caracteres_ColValue:
                                                 print("O projeto duplicado.", valores_projeto_carga)
                                                 break
-                                            df_hierarquia.at[indice[0], 'Unnamed: 34'] = valores_projeto_carga
+                                            df_hierarquia.at[indice[0], 'Unnamed: 32'] = valores_projeto_carga
                                         else:
-                                            df_hierarquia.at[indice[0], 'Unnamed: 33'] = valores_projeto_carga
+                                            df_hierarquia.at[indice[0], 'Unnamed: 32'] = valores_projeto_carga
                                         df_hierarquia.at[indice[0]+1, 'Unnamed: 0'] = setCode
                                         df_hierarquia.at[indice[0]+1, 'Unnamed: 1'] = treeCode
                                         df_hierarquia.at[indice[0]+1, 'Unnamed: 2'] = treeCodeVersion
@@ -99,10 +106,16 @@ for row in df_carga.index:
                                         break
                                 else:
                                     contador += 1
-
+                                    if valores_projeto_carga == 'CENT000001':
+                                        print(valores_projeto_carga)
+                                        print(ColValue)
+                                        print(c)
+                                        breakpoint()
                                     if primeira_letra.startswith(('C')) : 
                                         for c in range(row, len(df_hierarquia)): 
-                                            ColValue = df_hierarquia.at[c, 'Unnamed: 34']
+                                            ColValue = df_hierarquia.at[c, 'Unnamed: 32']
+                                      
+
                                             if not (ColValue is None or (isinstance(ColValue, float) and math.isnan(ColValue))):
                                                 # Se my_var não for None, execute o código aqui
                                                 # print("my_var tem um valor válido:", ColValue)
@@ -114,19 +127,19 @@ for row in df_carga.index:
 
                                                 comparaCaractereP1 = valores_projeto_carga[:-3]
                                                 comparaCaractereP2 = ColValue[:-3]
-                                                # print(validaColValue) 
-                                                # print(ultimos_tres_caracteres_ColValue) 
-                                                # print(ultimos_tres_caracteres_carga) 
-                                                # print(ultimos_tres_caracteres_ColValue) 
-                                                # print('---------') 
+                                                print(validaColValue) 
+                                                print(ultimos_tres_caracteres_ColValue) 
+                                                print(ultimos_tres_caracteres_carga) 
+                                                print(ultimos_tres_caracteres_ColValue) 
+                                                print('---------') 
                                                 if validaColValue < ultimos_tres_caracteres_ColValue and ultimos_tres_caracteres_carga > ultimos_tres_caracteres_ColValue:
                                                     validaColValue = ultimos_tres_caracteres_ColValue 
                                                     ColValueP2 = ColValue 
                  
-                                                # print(comparaCaractereP1) 
-                                                # print(comparaCaractereP2)
-                                                # print(ultimos_tres_caracteres_carga) 
-                                                # print(ultimos_tres_caracteres_ColValue) 
+                                                print(comparaCaractereP1) 
+                                                print(comparaCaractereP2)
+                                                print(ultimos_tres_caracteres_carga) 
+                                                print(ultimos_tres_caracteres_ColValue) 
                                                 if ultimos_tres_caracteres_carga == ultimos_tres_caracteres_ColValue:
                                                     print("O projeto duplicado.", valores_projeto_carga)
                                                     
@@ -173,12 +186,12 @@ for row in df_carga.index:
                                         break
                                     else:
                                         for c in range(row, len(df_hierarquia)): 
-                                            ColValue = df_hierarquia.at[c-1, 'Unnamed: 33']
-                                            # if valores_projeto_carga == 'PESP000016003':
-                                            #     print(valores_projeto_carga)
-                                            #     print(ColValue)
-                                            #     print(c)
-                                            #     breakpoint()
+                                            ColValue = df_hierarquia.at[c-1, 'Unnamed: 32']
+                                            if valores_projeto_carga == 'CFJI00000201':
+                                                print(valores_projeto_carga)
+                                                print(ColValue)
+                                                print(c)
+                                                breakpoint()
                                             if not (ColValue is None or (isinstance(ColValue, float) and math.isnan(ColValue))):
                                                 # Se my_var não for None, execute o código aqui
                                                 # print("my_var tem um valor válido:", ColValue)
@@ -211,7 +224,7 @@ for row in df_carga.index:
                                          
                                                 if ultimos_tres_caracteres_carga < ultimos_tres_caracteres_ColValue and comparaCaractereP1 != comparaCaractereP2:
                                                     # Encontre o índice do valor na coluna ''Unnamed: 35''
-                                                    indice = df_hierarquia.index[df_hierarquia['Unnamed: 33'] == ColValue].tolist()
+                                                    indice = df_hierarquia.index[df_hierarquia['Unnamed: 32'] == ColValue].tolist()
                                                     print('passou') 
                                                     print(comparaCaractereP1) 
                                                     print(comparaCaractereP2) 
@@ -219,7 +232,7 @@ for row in df_carga.index:
                                                     # breakpoint()
                                                     
                                                     df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]-1], nova_linha, df_hierarquia.iloc[indice[0]-1:]], ignore_index=True)
-                                                    df_hierarquia.at[indice[0]-1, 'Unnamed: 33'] = valores_projeto_carga
+                                                    df_hierarquia.at[indice[0]-1, 'Unnamed: 32'] = valores_projeto_carga
                                                     df_hierarquia.at[indice[0]-1, 'Unnamed: 0'] = setCode
                                                     df_hierarquia.at[indice[0]-1, 'Unnamed: 1'] = treeCode
                                                     df_hierarquia.at[indice[0]-1, 'Unnamed: 2'] = treeCodeVersion
@@ -227,7 +240,7 @@ for row in df_carga.index:
 
                                                     break
                                                 elif ultimos_tres_caracteres_carga < ultimos_tres_caracteres_ColValue and comparaCaractereP1 == comparaCaractereP2:
-                                                    indice = df_hierarquia.index[df_hierarquia['Unnamed: 33'] == ColValue].tolist()
+                                                    indice = df_hierarquia.index[df_hierarquia['Unnamed: 32'] == ColValue].tolist()
                                                     print(valores_projeto_carga)
                                                     print(ColValue)
                                                     print(c)
@@ -239,7 +252,7 @@ for row in df_carga.index:
                                                     print(comparaCaractereP2) 
                                                     # breakpoint()  
                                                     df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]], nova_linha, df_hierarquia.iloc[indice[0]:]], ignore_index=True)
-                                                    df_hierarquia.at[indice[0], 'Unnamed: 33'] = valores_projeto_carga
+                                                    df_hierarquia.at[indice[0], 'Unnamed: 32'] = valores_projeto_carga
                                                     df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
                                                     df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
                                                     df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
@@ -254,7 +267,7 @@ for row in df_carga.index:
             print("O projeto", valores_projeto_carga, " não possui letras validas, quantidade de letras .",quantidade_caracteres) 
 
 # Caminho para o arquivo Excel existente
-arquivo_excel = 'PP.OO.9.100 - Hierarquia de Projetos.xlsm'
+arquivo_excel = 'C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia de Projetos.xlsm'
 
 # Carrega o DataFrame novo com os dados que deseja atualizar
 df_novo = df_hierarquia
