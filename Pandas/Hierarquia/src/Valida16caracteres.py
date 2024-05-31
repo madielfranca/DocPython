@@ -4,9 +4,10 @@ from openpyxl import load_workbook
 import pandas as pd
 
 class Hierarquia16Caracteres:
-    def __init__(self, projeto_carga_excel_path, projeto_carga_sheet_name, projeto_hierarquia_excel_path, projeto_hierarquia_sheet_name) -> None:
+    def __init__(self, projeto_carga_excel_path, projeto_carga_sheet_name, projeto_hierarquia_excel_path, projeto_hierarquia_sheet_name, filename) -> None:
         self.df_carga = pd.read_excel(projeto_carga_excel_path, sheet_name=projeto_carga_sheet_name, header=0)
         self.df_hierarquia = pd.read_excel(projeto_hierarquia_excel_path, sheet_name=projeto_hierarquia_sheet_name, header=0)
+        self.filename = filename
 
     @retry(3, Exception)
     def print_data_frame(self):
@@ -14,6 +15,7 @@ class Hierarquia16Caracteres:
         df_carga = self.df_carga
         df_hierarquia = pd.read_excel('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', sheet_name='GL_SEGMENT_HIER_INTERFACE', header=0)
         values_to_add  = []
+        file_name_caraga = self.filename
         for row in df_carga.index:
             #Verifica se o nome da coluna é 'Unnamed'
             if 'Unnamed: 0' in df_carga.columns:
@@ -90,16 +92,9 @@ class Hierarquia16Caracteres:
 
                                                     break
                                                 else:
-                                                    print('Nenhum filho') 
                                                     ColValue = df_hierarquia.at[i-2, 'Unnamed: 33']
-                                                    print(valores_projeto_carga)
-                                                    print(ColValue)
-                                                    print(i-5)
                                                     indice = df_hierarquia.index[df_hierarquia['Unnamed: 33'] == ColValue].tolist()
-                                                    print(indice)
 
-                                                    breakpoint()
-                                                
                                                     df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]+1], nova_linha, df_hierarquia.iloc[indice[0]+1:]], ignore_index=True)
                                                     df_hierarquia.at[indice[0]+1, 'Unnamed: 35'] = valores_projeto_carga
                                                     df_hierarquia.at[indice[0]+1, 'Unnamed: 0'] = setCode
@@ -133,7 +128,7 @@ class Hierarquia16Caracteres:
                                                 print("Projeto Incluido com sucesso.", valores_projeto_carga)
                                                 values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
 
-                                            # Encontre o índice do valor na coluna ''Unnamed: 35''
+                                                # Encontre o índice do valor na coluna ''Unnamed: 35''
                                                 indice = df_hierarquia.index[df_hierarquia['Unnamed: 35'] == ColValue].tolist()
                                                 
                                                 df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]], nova_linha, df_hierarquia.iloc[indice[0]:]], ignore_index=True)
@@ -146,19 +141,17 @@ class Hierarquia16Caracteres:
 
                                                 break
 
-
-
                 else:
-                    print("O projeto", valores_projeto_carga, " não possui letras validas, quantidade de letras .",quantidade_caracteres) 
+                    # print("O projeto", valores_projeto_carga, " não possui letras validas, quantidade de letras .",quantidade_caracteres) 
                     values_to_add.append("O projeto não possui letras validas."+ valores_projeto_carga)
                    
             else:                    
                 if valores_projeto_carga != "nan" and valores_projeto_carga != "*Value":
-                    print("O projeto" ,valores_projeto_carga, "não possui quantidade de letras validas.")
+                    # print("O projeto" ,valores_projeto_carga, "não possui quantidade de letras validas.")
                     values_to_add.append("O projeto não possui quantidade de letras validas."+ valores_projeto_carga)
 
 
-        LogStatus_obj=LogStatus(values_to_add)
+        LogStatus_obj=LogStatus(values_to_add, file_name_caraga)
         LogStatus_obj.logar()
 
         # Caminho para o arquivo Excel existente

@@ -5,9 +5,10 @@ import pandas as pd
 import math
 
 class Hierarquia10Caracteres:
-    def __init__(self, projeto_carga_excel_path, projeto_carga_sheet_name, projeto_hierarquia_excel_path, projeto_hierarquia_sheet_name) -> None:
+    def __init__(self, projeto_carga_excel_path, projeto_carga_sheet_name, projeto_hierarquia_excel_path, projeto_hierarquia_sheet_name, filename) -> None:
         self.df_carga = pd.read_excel(projeto_carga_excel_path, sheet_name=projeto_carga_sheet_name, header=0)
         self.df_hierarquia = pd.read_excel(projeto_hierarquia_excel_path, sheet_name=projeto_hierarquia_sheet_name, header=0)
+        self.filename = filename
 
     @retry(3, Exception)
     def print_data_frame(self):
@@ -15,11 +16,12 @@ class Hierarquia10Caracteres:
         df_carga = self.df_carga
         df_hierarquia = pd.read_excel('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', sheet_name='GL_SEGMENT_HIER_INTERFACE', header=0)
         values_to_add  = []
+        file_name_caraga = self.filename
+
         for row in df_carga.index:
             #Verifica se o nome da coluna é 'Unnamed'
             if 'Unnamed: 0' in df_carga.columns:
                 valores_projeto_carga = df_carga['Unnamed: 1'][row]
-
             else:
                 valores_projeto_carga = df_carga['B'][row]
             valores_projeto_carga = str(valores_projeto_carga)
@@ -44,72 +46,47 @@ class Hierarquia10Caracteres:
 
                             parent3Hierarquia = str(parent3Hierarquia)
                             qtCaracteresParent3 = valores_projeto_carga[:-6]
-
                             conCaracteresParent3 = valores_projeto_carga[-3:]
-                            
                             
                             nova_linha = pd.DataFrame([[None] * len(df_hierarquia.columns)], columns=df_hierarquia.columns)
                             if parent3Hierarquia == qtCaracteresParent3:
-                                # print(qtCaracteresParent3)     
-                                # print(parent3Hierarquia)    
+
                                 for c in range(row, len(df_hierarquia)):
                                     ColValue = df_hierarquia.at[c, 'Unnamed: 32']
                                     ColValue = str(ColValue)
                                     conCaracteresParent3Hierarquia = ColValue[-3:]
                                     parent4 = ColValue[:-6]
+                                    if c == len(df_hierarquia) - 1:
+                                        print("Projeto Incluido com sucesso.", valores_projeto_carga)
+                                        values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
+                                        
+                                        # Encontre o índice do valor na coluna ''Unnamed: 35'
+                                        indice = df_hierarquia.index[df_hierarquia['Unnamed: 35'] == df_hierarquia.iloc[c]['Unnamed: 35']].tolist()                                       
+                                        df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]+1], nova_linha, df_hierarquia.iloc[indice[0]+1:]], ignore_index=True)
+                                        
+                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 32'] = valores_projeto_carga
+                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 0'] = setCode
+                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 1'] = treeCode
+                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 2'] = treeCodeVersion
+                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 3'] = treeCodeVersionDate
+                                        
+                                        break
                                     if ColValue != "nan":
-                               
-                                        # if valores_projeto_carga == 'ICNG000046' and parent3Hierarquia == 'ICNG':
-                                        #     print('inicio')  
-                                        #     print(qtCaracteresParent3) 
-                                        #     print(parent3Hierarquia)  
-                                        #     print('-------------------')  
-                                        #     print(conCaracteresParent3) 
-                                        #     print(conCaracteresParent3Hierarquia) 
-                                        #     print(parent4) 
-                                        #     print('-------------------')  
-                                        #     print(ColValue) 
-                                        #     print(valores_projeto_carga) 
-                                        #     print('-------------------')  
-                                        #     print(row)
-                                        #     print('fim')   
-                                        #     breakpoint()
-                                                            
+                                     
                                         # Verificando se o parent 3 existe
-                                        if ColValue == valores_projeto_carga:
-                                            print(ColValue)     
-                                            print(valores_projeto_carga) 
-                                            print(qtCaracteresParent3) 
-                                            print(conCaracteresParent3Hierarquia) 
-                                            print(conCaracteresParent3)        
+                                        if ColValue == valores_projeto_carga:     
                                             print("O projeto duplicado.", valores_projeto_carga)
                                             values_to_add.append("O projeto duplicado."+ valores_projeto_carga)
                                             break
                             
                                             
                                         elif conCaracteresParent3 < conCaracteresParent3Hierarquia:
-                                            print('inicio')  
-                                            print(qtCaracteresParent3) 
-                                            print(parent3Hierarquia)  
-                                            print('-------------------')  
-                                            print(conCaracteresParent3) 
-                                            print(conCaracteresParent3Hierarquia) 
-                                            print(parent4) 
-                                            print('-------------------')  
-                                            print(ColValue) 
-                                            print(valores_projeto_carga) 
-                                            print('-------------------')  
-                                            print(row)
-                                            print('fim')   
 
                                             print("Projeto Incluido com sucesso.", valores_projeto_carga)
                                             values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
-                                            # breakpoint()
-                                            
+
                                             # Encontre o índice do valor na coluna ''Unnamed: 32'
-                                            indice = df_hierarquia.index[df_hierarquia['Unnamed: 32'] == ColValue].tolist()
-                                            print(indice)
-                                            
+                                            indice = df_hierarquia.index[df_hierarquia['Unnamed: 32'] == ColValue].tolist()                                           
                                             df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]], nova_linha, df_hierarquia.iloc[indice[0]:]], ignore_index=True)
                                             
                                             df_hierarquia.at[indice[0], 'Unnamed: 32'] = valores_projeto_carga
@@ -117,47 +94,29 @@ class Hierarquia10Caracteres:
                                             df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
                                             df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
                                             df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
-                                            # breakpoint()
+                                            # 
                                             break
 
                                     
                                         elif parent3Hierarquia != parent4 and parent4 != 'OEVT':
-                                            print('passou') 
-                                            print(parent4) 
-                                            print(parent3Hierarquia) 
-                                            print(parent3Hierarquia) 
-                                            print(parent3Hierarquia) 
-                                            # breakpoint()
-                                                                                      
+                                  
                                             print("Projeto Incluido com sucesso.", valores_projeto_carga)
                                             values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
                                             
                                             # Encontre o índice do valor na coluna ''Unnamed: 35''
-                                            indice = df_hierarquia.index[df_hierarquia['Unnamed: 32'] == ColValue].tolist()
-                                            print(indice)
-                                            
+                                            indice = df_hierarquia.index[df_hierarquia['Unnamed: 32'] == ColValue].tolist()                                            
                                             df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]-1], nova_linha, df_hierarquia.iloc[indice[0]-1:]], ignore_index=True)
                                             
                                             df_hierarquia.at[indice[0]-1, 'Unnamed: 32'] = valores_projeto_carga
-                                            df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
-                                            df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
-                                            df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
-                                            df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
+                                            df_hierarquia.at[indice[0]-1, 'Unnamed: 0'] = setCode
+                                            df_hierarquia.at[indice[0]-1, 'Unnamed: 1'] = treeCode
+                                            df_hierarquia.at[indice[0]-1, 'Unnamed: 2'] = treeCodeVersion
+                                            df_hierarquia.at[indice[0]-1, 'Unnamed: 3'] = treeCodeVersionDate
 
-                                            break
-                                
-
-                else:
-                    print("O projeto", valores_projeto_carga, " não possui letras validas, quantidade de letras .",quantidade_caracteres) 
-                    values_to_add.append("O projeto não possui letras validas."+ valores_projeto_carga)
-                   
-            else:                    
-                if valores_projeto_carga != "nan" and valores_projeto_carga != "*Value":
-                    print("O projeto" ,valores_projeto_carga, "não possui quantidade de letras validas.")
-                    values_to_add.append("O projeto não possui quantidade de letras validas."+ valores_projeto_carga)
+                                            break            
 
 
-        LogStatus_obj=LogStatus(values_to_add)
+        LogStatus_obj=LogStatus(values_to_add, file_name_caraga)
         LogStatus_obj.logar()
 
         # Caminho para o arquivo Excel existente

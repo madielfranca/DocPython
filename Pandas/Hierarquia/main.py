@@ -1,7 +1,8 @@
 from assets.sharepoint_assets import sharepoint_functions_ctx as spf
-from src.Valida16caracteres import Hierarquia16Caracteres
-from src.Valida13caracteres import Hierarquia13Caracteres
 from src.Valida10caracteres import Hierarquia10Caracteres
+from src.Valida12caracteres import Hierarquia12Caracteres
+from src.Valida13caracteres import Hierarquia13Caracteres
+from src.Valida16caracteres import Hierarquia16Caracteres
 from globo_automacoes.decoradores import main_, retry
 from globo_automacoes.logger import logger_setup
 from libs.config import Config
@@ -18,7 +19,6 @@ current_date = datetime.now().strftime('%Y-%m-%d')
 
 @main_(config, log)
 def main() -> None:
-    print('funcionou')
     sharepoint_obj = spf.SharePointFunctions_ctx(site_name="InterfacesRCA")
 
     sharepoint_obj.download_all_files_from_folder(f"Documentos%20Partilhados/FJI/FinancasCorporativas/HierarquizacaoDeProjetos/HierarquiaDeProjetos", "files")
@@ -50,18 +50,20 @@ def main() -> None:
             if 'Hierarquia' in filename :
                 break
             else:
-                hierarquia10_obj=Hierarquia10Caracteres('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/'+filename, 'GL_SEGMENT_VALUES_INTERFACE', 'C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', 'GL_SEGMENT_HIER_INTERFACE')
-                hierarquia13_obj=Hierarquia13Caracteres('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/'+filename, 'GL_SEGMENT_VALUES_INTERFACE', 'C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', 'GL_SEGMENT_HIER_INTERFACE')
-                hierarquia16_obj=Hierarquia16Caracteres('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/'+filename, 'GL_SEGMENT_VALUES_INTERFACE', 'C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', 'GL_SEGMENT_HIER_INTERFACE')
+                hierarquia10_obj=Hierarquia10Caracteres('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/'+filename, 'GL_SEGMENT_VALUES_INTERFACE', 'C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', 'GL_SEGMENT_HIER_INTERFACE', filename)
+                hierarquia12_obj=Hierarquia12Caracteres('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/'+filename, 'GL_SEGMENT_VALUES_INTERFACE', 'C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', 'GL_SEGMENT_HIER_INTERFACE', filename)
+                hierarquia13_obj=Hierarquia13Caracteres('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/'+filename, 'GL_SEGMENT_VALUES_INTERFACE', 'C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', 'GL_SEGMENT_HIER_INTERFACE', filename)
+                hierarquia16_obj=Hierarquia16Caracteres('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/'+filename, 'GL_SEGMENT_VALUES_INTERFACE', 'C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', 'GL_SEGMENT_HIER_INTERFACE', filename)
                 try:        
                     hierarquia10_obj.print_data_frame()
+                    hierarquia12_obj.print_data_frame()
                     hierarquia13_obj.print_data_frame()
                     hierarquia16_obj.print_data_frame()
                 except Exception:
                     print('falhou')
     arquivo_log = f'HierarquiaStatus_{current_date}.xlsx'
-    # sharepoint_obj.upload_file(f"Documentos%20Partilhados/FJI/FinancasCorporativas/HierarquizacaoDeProjetos/HierarquiaDeProjet4eos", "C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia", "PP.OO.9.100 - Hierarquia de Projetos.xlsm")
-    # sharepoint_obj.upload_file(f"Documentos%20Partilhados/FJI/FinancasCorporativas/HierarquizacaoDeProjetos/RelatorioExecucaoRobo", "C:/Users/madis/Documents/DocPython/Pandas/Hierarquia", arquivo_log)
+    sharepoint_obj.upload_file(f"Documentos%20Partilhados/FJI/FinancasCorporativas/HierarquizacaoDeProjetos/HierarquiaDeProjetos", "C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia", "PP.OO.9.100 - Hierarquia de Projetos.xlsm")
+    sharepoint_obj.upload_file(f"Documentos%20Partilhados/FJI/FinancasCorporativas/HierarquizacaoDeProjetos/StatusExecucaoRobo", "C:/Users/madis/Documents/DocPython/Pandas/Hierarquia", arquivo_log)
 
 if __name__ == "__main__":
  

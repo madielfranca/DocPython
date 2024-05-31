@@ -5,9 +5,10 @@ import pandas as pd
 import math
 
 class Hierarquia13Caracteres:
-    def __init__(self, projeto_carga_excel_path, projeto_carga_sheet_name, projeto_hierarquia_excel_path, projeto_hierarquia_sheet_name) -> None:
+    def __init__(self, projeto_carga_excel_path, projeto_carga_sheet_name, projeto_hierarquia_excel_path, projeto_hierarquia_sheet_name, filename) -> None:
         self.df_carga = pd.read_excel(projeto_carga_excel_path, sheet_name=projeto_carga_sheet_name, header=0)
         self.df_hierarquia = pd.read_excel(projeto_hierarquia_excel_path, sheet_name=projeto_hierarquia_sheet_name, header=0)
+        self.filename = filename
 
     @retry(3, Exception)
     def print_data_frame(self):
@@ -16,6 +17,7 @@ class Hierarquia13Caracteres:
         df_carga = self.df_carga
         df_hierarquia = pd.read_excel('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', sheet_name='GL_SEGMENT_HIER_INTERFACE', header=0)
         values_to_add  = []
+        file_name_caraga = self.filename
         for row in df_carga.index:
             #Verifica se o nome da coluna é 'Unnamed'
             if 'Unnamed: 0' in df_carga.columns:
@@ -76,15 +78,13 @@ class Hierarquia13Caracteres:
 
                                         if not isinstance(ColValue, str) or ColValue == "nan":                                                    
                                             if  contador > 0: 
-                                                print('execao') 
         
                                                 lista_sem_ultima = minha_lista[:-1]
                                                 ultimo_valor = lista_sem_ultima[-1]
 
                                                 # Encontre o índice do valor na coluna ''Unnamed: 35''
                                                 indice = df_hierarquia.index[df_hierarquia['Unnamed: 33'] == ultimo_valor].tolist()
-                                                
-                                                df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]+1], nova_linha, df_hierarquia.iloc[indice[0]+1:]], ignore_index=True)
+                                                df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]], nova_linha, df_hierarquia.iloc[indice[0]:]], ignore_index=True)
                                                 
                                                 if primeira_letra.startswith(('C')): 
                                                     print(ultimos_tres_caracteres_carga) 
@@ -100,21 +100,16 @@ class Hierarquia13Caracteres:
                                                         values_to_add.append("O projeto duplicado."+ valores_projeto_carga)
                                                         break
                                                     df_hierarquia.at[indice[0], 'Unnamed: 33'] = valores_projeto_carga
-                                                df_hierarquia.at[indice[0]+1, 'Unnamed: 0'] = setCode
-                                                df_hierarquia.at[indice[0]+1, 'Unnamed: 1'] = treeCode
-                                                df_hierarquia.at[indice[0]+1, 'Unnamed: 2'] = treeCodeVersion
-                                                df_hierarquia.at[indice[0]+1, 'Unnamed: 3'] = treeCodeVersionDate
+                                                df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
+                                                df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
+                                                df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
+                                                df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
                                                 values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
 
                                                 break
                                             else:
-                                                print('Nenhum filho') 
                                                 ColValue = df_hierarquia.at[i-2, 'Unnamed: 32']
-                                                print(valores_projeto_carga)
-                                                print(ColValue)
-                                                print(i-5)
                                                 indice = df_hierarquia.index[df_hierarquia['Unnamed: 32'] == ColValue].tolist()
-                                                print(indice)
                                                                                                
                                                 df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]+1], nova_linha, df_hierarquia.iloc[indice[0]+1:]], ignore_index=True)
                                                 df_hierarquia.at[indice[0]+1, 'Unnamed: 33'] = valores_projeto_carga
@@ -134,7 +129,6 @@ class Hierarquia13Caracteres:
                                                     ColValue = df_hierarquia.at[c, 'Unnamed: 34']
                                                     if not (ColValue is None or (isinstance(ColValue, float) and math.isnan(ColValue))):
                                                         # Se my_var não for None, execute o código aqui
-                                                        # print("my_var tem um valor válido:", ColValue)
                                                         ultimos_tres_caracteres_carga = valores_projeto_carga[-5:]
                                                         ultimos_tres_caracteres_carga = int(ultimos_tres_caracteres_carga)
 
@@ -146,11 +140,7 @@ class Hierarquia13Caracteres:
                                                         if validaColValue < ultimos_tres_caracteres_ColValue and ultimos_tres_caracteres_carga > ultimos_tres_caracteres_ColValue:
                                                             validaColValue = ultimos_tres_caracteres_ColValue 
                                                             ColValueP2 = ColValue 
-                        
-                                                        # print(comparaCaractereP1) 
-                                                        # print(comparaCaractereP2)
-                                                        # print(ultimos_tres_caracteres_carga) 
-                                                        # print(ultimos_tres_caracteres_ColValue) 
+
                                                         if ultimos_tres_caracteres_carga == ultimos_tres_caracteres_ColValue:
                                                             print("O projeto duplicado.", valores_projeto_carga)
                                                             values_to_add.append("O projeto duplicado."+ valores_projeto_carga)
@@ -159,16 +149,17 @@ class Hierarquia13Caracteres:
                                                 
                                                         if ultimos_tres_caracteres_carga < ultimos_tres_caracteres_ColValue and comparaCaractereP1 != comparaCaractereP2:
                                                             values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
-                                                            # print('passou') 
-                                                            # print(comparaCaractereP1) 
-                                                            # print(comparaCaractereP2) 
-                                                            # breakpoint()
-                                                                # Encontre o índice do valor na coluna ''Unnamed: 35''
+
+                                                            # Encontre o índice do valor na coluna 'Unnamed: 35'
                                                             indice = df_hierarquia.index[df_hierarquia['Unnamed: 34'] == ColValue].tolist()
                                                             
                                                             df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]-2], nova_linha, df_hierarquia.iloc[indice[0]-2:]], ignore_index=True)
                                                             if primeira_letra.startswith(('C')): 
                                                                 df_hierarquia.at[indice[0]-2, 'Unnamed: 34'] = valores_projeto_carga
+                                                                df_hierarquia.at[indice[0]-2, 'Unnamed: 0'] = setCode
+                                                                df_hierarquia.at[indice[0]-2, 'Unnamed: 1'] = treeCode
+                                                                df_hierarquia.at[indice[0]-2, 'Unnamed: 2'] = treeCodeVersion
+                                                                df_hierarquia.at[indice[0]-2, 'Unnamed: 3'] = treeCodeVersionDate
                                                             else:
                                                                 df_hierarquia.at[indice[0], 'Unnamed: 34'] = valores_projeto_carga
                                                                 df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
@@ -180,15 +171,7 @@ class Hierarquia13Caracteres:
                                                         elif ultimos_tres_caracteres_carga < ultimos_tres_caracteres_ColValue and comparaCaractereP1 == comparaCaractereP2:
                                                             values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
                                                             indice = df_hierarquia.index[df_hierarquia['Unnamed: 34'] == ColValue].tolist()
-                                                            # breakpoint()
-                                                            # ColValueP2 caso nessecite inserir a linha abaixo do penultimo item
-                                                            # print(ColValueP2) 
-                                                            # print(ultimos_tres_caracteres_carga)  
-                                                            # print(ultimos_tres_caracteres_ColValue)  
-                                                            # print('else') 
-                                                            # print(ColValueP2) 
-                                                            # print(comparaCaractereP1) 
-                                                            # print(comparaCaractereP2) 
+ 
                                                             df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]], nova_linha, df_hierarquia.iloc[indice[0]:]], ignore_index=True)
                                                             if primeira_letra.startswith(('C')): 
                                                                 df_hierarquia.at[indice[0], 'Unnamed: 34'] = valores_projeto_carga
@@ -199,17 +182,11 @@ class Hierarquia13Caracteres:
                                                             break
                                                 break
                                             else:
-                                                if valores_projeto_carga == 'ICNG000046001':
-                                                    print(valores_projeto_carga)
-                                                    print(ColValue)
-                                                    print(c)
-                                                    # breakpoint()
                                                 for c in range(row, len(df_hierarquia)): 
                                                     ColValue = df_hierarquia.at[c-1, 'Unnamed: 33']
                                                   
                                                     if not (ColValue is None or (isinstance(ColValue, float) and math.isnan(ColValue))):
                                                         # Se my_var não for None, execute o código aqui
-                                                        # print("my_var tem um valor válido:", ColValue)
                                                         ultimos_tres_caracteres_carga = valores_projeto_carga[-5:]
                                                         ultimos_tres_caracteres_carga = int(ultimos_tres_caracteres_carga)
 
@@ -218,20 +195,12 @@ class Hierarquia13Caracteres:
 
                                                         comparaCaractereP1 = valores_projeto_carga[:-3]
                                                         comparaCaractereP2 = ColValue[:-3]
-                                                        # print(validaColValue) 
-                                                        # print(ultimos_tres_caracteres_ColValue) 
-                                                        # print(ultimos_tres_caracteres_carga) 
-                                                        # print(ultimos_tres_caracteres_ColValue) 
-                                                        # print('---------') 
+
                                                         #Guarda o penultimo valor da hierarquia 
                                                         if validaColValue < ultimos_tres_caracteres_ColValue and ultimos_tres_caracteres_carga > ultimos_tres_caracteres_ColValue:
                                                             validaColValue = ultimos_tres_caracteres_ColValue 
                                                             ColValueP2 = ColValue 
-                        
-                                                        # print(comparaCaractereP1) 
-                                                        # print(comparaCaractereP2)
-                                                        # print(ultimos_tres_caracteres_carga) 
-                                                        # print(ultimos_tres_caracteres_ColValue) 
+
                                                         if ultimos_tres_caracteres_carga == ultimos_tres_caracteres_ColValue:
                                                             print("O projeto duplicado.", valores_projeto_carga)
                                                             
@@ -253,16 +222,7 @@ class Hierarquia13Caracteres:
                                                         elif ultimos_tres_caracteres_carga < ultimos_tres_caracteres_ColValue and comparaCaractereP1 == comparaCaractereP2:
                                                             values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
                                                             indice = df_hierarquia.index[df_hierarquia['Unnamed: 33'] == ColValue].tolist()
-                                                            # print(valores_projeto_carga)
-                                                            # print(ColValue)
-                                                            # print(c)
-                                                            # print(ultimos_tres_caracteres_carga)  
-                                                            # print(ultimos_tres_caracteres_ColValue)  
-                                                            # print('else') 
-                                                            # print(indice) 
-                                                            # print(comparaCaractereP1) 
-                                                            # print(comparaCaractereP2) 
-                                                            # breakpoint()  
+
                                                             df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]], nova_linha, df_hierarquia.iloc[indice[0]:]], ignore_index=True)
                                                             df_hierarquia.at[indice[0], 'Unnamed: 33'] = valores_projeto_carga
                                                             df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
@@ -273,13 +233,7 @@ class Hierarquia13Caracteres:
                                                 break
                                     break
 
-                else:
-                    print("O projeto" ,valores_projeto_carga, "não posui quantidade de letras validas.")
-            else:                    
-                if valores_projeto_carga != "nan" and valores_projeto_carga != "*Value":
-                    print("O projeto", valores_projeto_carga, " não possui letras validas, quantidade de letras .",quantidade_caracteres) 
-
-        LogStatus_obj=LogStatus(values_to_add)
+        LogStatus_obj=LogStatus(values_to_add, file_name_caraga)
         LogStatus_obj.logar()
 
         # Caminho para o arquivo Excel existente
