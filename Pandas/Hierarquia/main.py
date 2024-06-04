@@ -5,10 +5,13 @@ from src.Valida13caracteres import Hierarquia13Caracteres
 from src.Valida16caracteres import Hierarquia16Caracteres
 from globo_automacoes.decoradores import main_, retry
 from globo_automacoes.logger import logger_setup
-from libs.config import Config
 from datetime import datetime, timedelta
-import shutil
+from src.LogStatus import LogStatus
+from libs.config import Config
+import pandas as pd
 import os
+import shutil
+import math
 
 config = Config()
  
@@ -62,7 +65,7 @@ def main() -> None:
                 except Exception:
                     print('falhou')
     arquivo_log = f'HierarquiaStatus_{current_date}.xlsx'
-    sharepoint_obj.upload_file(f"Documentos%20Partilhados/FJI/FinancasCorporativas/HierarquizacaoDeProjetos/HierarquiaDeProjetos", "C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia", "PP.OO.9.100 - Hierarquia de Projetos.xlsm")
+    # sharepoint_obj.upload_file(f"Documentos%20Partilhados/FJI/FinancasCorporativas/HierarquizacaoDeProjetos/HierarquiaDeProjetos", "C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia", "PP.OO.9.100 - Hierarquia de Projetos.xlsm")
     sharepoint_obj.upload_file(f"Documentos%20Partilhados/FJI/FinancasCorporativas/HierarquizacaoDeProjetos/StatusExecucaoRobo", "C:/Users/madis/Documents/DocPython/Pandas/Hierarquia", arquivo_log)
 
 
@@ -78,12 +81,51 @@ def limpa_arquivo_log_dia_anterior():
     file_path = f'HierarquiaStatus_{previous_day.strftime("%Y-%m-%d")}.xlsx'
     print(file_path)
     if os.path.exists(file_path):
-        print('deletou')
         os.remove(file_path)
 
+def find_value_in_files():
+    values_to_add  = []
+    df_status = pd.read_excel('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/HierarquiaStatus_2024-06-05.xlsx', engine='openpyxl')
+
+    caminho_pasta   = 'C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/'
+
+    # Lista para armazenar os DataFrames
+    lista_dfs = []
+
+    # Loop para ler cada arquivo Excel na pasta
+    for arquivo in os.listdir(caminho_pasta):
+        if arquivo.endswith('.xlsm'):  # Certifique-se de que é um arquivo Excel
+            caminho_arquivo = os.path.join(caminho_pasta, arquivo)
+            df = pd.read_excel(caminho_arquivo, 'GL_SEGMENT_VALUES_INTERFACE')
+            lista_dfs.append(df)
+
+    # Combina todos os DataFrames em um único DataFrame
+    df_combinado = pd.concat(lista_dfs, ignore_index=True)
 
 
+    for row in df_combinado.index:
+        valor_carga = df_combinado['Unnamed: 1'][row]
+        if not (valor_carga is None or (isinstance(valor_carga, float) and math.isnan(valor_carga))):
+            if valor_carga != '*Value':
+                encontrado = False
+                for row in df_status.index:
+                    valor_status = df_status['Status'][row]
+                    nome_status = df_status['Arquivo'][row]
+
+                    if valor_carga in valor_status:
+                        print(f"Value found in file: {valor_carga}")
+                        encontrado = True
+                   
+                if encontrado == False:
+                    print(f"Value not found in file: {valor_carga}")
+                    values_to_add.append("Erro na hierarquia."+ valor_carga)
+                 
+                    break   
+    LogStatus_obj=LogStatus(values_to_add, nome_status)
+    LogStatus_obj.logar()
+            
 if __name__ == "__main__":
  
     main()
     limpa_arquivo_log_dia_anterior()
+    find_value_in_files()

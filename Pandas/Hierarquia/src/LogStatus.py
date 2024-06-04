@@ -8,15 +8,15 @@ import os
 class LogStatus:
     def __init__(self, values_to_add, file_name_caraga) -> None:
         self.valor_carga = values_to_add
-        self.file_name_caraga = file_name_caraga
+        self.file_name_carga = file_name_caraga
 
     @retry(3, Exception)
     def logar(self):
         valor_carga = self.valor_carga
-        print(self.file_name_caraga)
 
         # Get the current date
         current_date = datetime.now().strftime('%Y-%m-%d')
+        log_date = datetime.now()
 
         # Configure logging
         logging.basicConfig(filename=f'app_{current_date}.log', filemode='a', format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -27,8 +27,6 @@ class LogStatus:
         try:
             # Path to the existing Excel file
             file_path = f'HierarquiaStatus_{current_date}.xlsx'
-
-            file_name = os.path.basename(file_path)
             
             # Check if the file exists
             if os.path.exists(file_path):
@@ -43,7 +41,9 @@ class LogStatus:
             # Example list of values to add
             values_to_add_list = valor_carga
             # Create a DataFrame with the new values
-            new_data = pd.DataFrame({'Status': values_to_add_list, 'Arquivo': self.file_name_caraga})
+
+            new_data = pd.DataFrame({'Status': values_to_add_list, 'Arquivo': self.file_name_carga, 'Data Execução': log_date})
+
 
             # Append the new data to the existing DataFrame
             existing_df = pd.concat([existing_df, new_data], ignore_index=True)
