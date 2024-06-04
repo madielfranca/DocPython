@@ -30,16 +30,6 @@ class LogStatus:
 
             file_name = os.path.basename(file_path)
             
-            # Split the file name by underscore and extract the last part
-            date_part = file_name.split("_")[-1]
-
-            dia_atual = datetime.now().day
-            dia_anterior = date_part.split("-")[-1].split(".")[0]
-            dia_anterior = int(dia_anterior)
-
-            if dia_atual > dia_anterior:
-                os.remove(file_path)
-            
             # Check if the file exists
             if os.path.exists(file_path):
                 # Read the existing Excel file

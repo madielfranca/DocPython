@@ -10,7 +10,7 @@ class Hierarquia16Caracteres:
         self.filename = filename
 
     @retry(3, Exception)
-    def print_data_frame(self):
+    def validar_projetos_16_caracteres(self):
 
         df_carga = self.df_carga
         df_hierarquia = pd.read_excel('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', sheet_name='GL_SEGMENT_HIER_INTERFACE', header=0)

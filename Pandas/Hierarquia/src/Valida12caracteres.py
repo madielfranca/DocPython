@@ -11,7 +11,7 @@ class Hierarquia12Caracteres:
         self.filename = filename
 
     @retry(3, Exception)
-    def print_data_frame(self):
+    def validar_projetos_12_caracteres(self):
 
         df_carga = self.df_carga
         file_name_caraga = self.filename

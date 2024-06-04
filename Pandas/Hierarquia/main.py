@@ -6,7 +6,7 @@ from src.Valida16caracteres import Hierarquia16Caracteres
 from globo_automacoes.decoradores import main_, retry
 from globo_automacoes.logger import logger_setup
 from libs.config import Config
-from datetime import datetime
+from datetime import datetime, timedelta
 import shutil
 import os
 
@@ -55,16 +55,35 @@ def main() -> None:
                 hierarquia13_obj=Hierarquia13Caracteres('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/'+filename, 'GL_SEGMENT_VALUES_INTERFACE', 'C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', 'GL_SEGMENT_HIER_INTERFACE', filename)
                 hierarquia16_obj=Hierarquia16Caracteres('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/'+filename, 'GL_SEGMENT_VALUES_INTERFACE', 'C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', 'GL_SEGMENT_HIER_INTERFACE', filename)
                 try:        
-                    hierarquia10_obj.print_data_frame()
-                    hierarquia12_obj.print_data_frame()
-                    hierarquia13_obj.print_data_frame()
-                    hierarquia16_obj.print_data_frame()
+                    hierarquia10_obj.validar_projetos_10_caracteres()
+                    hierarquia12_obj.validar_projetos_12_caracteres()
+                    hierarquia13_obj.validar_projetos_13_caracteres()
+                    hierarquia16_obj.validar_projetos_16_caracteres()
                 except Exception:
                     print('falhou')
     arquivo_log = f'HierarquiaStatus_{current_date}.xlsx'
     sharepoint_obj.upload_file(f"Documentos%20Partilhados/FJI/FinancasCorporativas/HierarquizacaoDeProjetos/HierarquiaDeProjetos", "C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia", "PP.OO.9.100 - Hierarquia de Projetos.xlsm")
     sharepoint_obj.upload_file(f"Documentos%20Partilhados/FJI/FinancasCorporativas/HierarquizacaoDeProjetos/StatusExecucaoRobo", "C:/Users/madis/Documents/DocPython/Pandas/Hierarquia", arquivo_log)
 
+
+def limpa_arquivo_log_dia_anterior():
+
+    # Get the current date
+    data_atual = datetime.now()
+    print(data_atual)
+    # Calculate the previous day
+    previous_day = data_atual - timedelta(days=1)
+    previous_day.strftime("%Y-%m-%d")
+
+    file_path = f'HierarquiaStatus_{previous_day.strftime("%Y-%m-%d")}.xlsx'
+    print(file_path)
+    if os.path.exists(file_path):
+        print('deletou')
+        os.remove(file_path)
+
+
+
 if __name__ == "__main__":
  
     main()
+    limpa_arquivo_log_dia_anterior()

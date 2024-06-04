@@ -2,7 +2,6 @@ from globo_automacoes.decoradores import retry
 from src.LogStatus import LogStatus
 from openpyxl import load_workbook
 import pandas as pd
-import math
 
 class Hierarquia10Caracteres:
     def __init__(self, projeto_carga_excel_path, projeto_carga_sheet_name, projeto_hierarquia_excel_path, projeto_hierarquia_sheet_name, filename) -> None:
@@ -11,7 +10,7 @@ class Hierarquia10Caracteres:
         self.filename = filename
 
     @retry(3, Exception)
-    def print_data_frame(self):
+    def validar_projetos_10_caracteres(self):
 
         df_carga = self.df_carga
         df_hierarquia = pd.read_excel('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', sheet_name='GL_SEGMENT_HIER_INTERFACE', header=0)
