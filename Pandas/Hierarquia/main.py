@@ -137,114 +137,85 @@ def validar_projetos_sem_hierarquia():
 
 def FormatarFBDI(pathFBDI, SheetName, WorkbookName, ext):
     read_file = pd.read_excel(pathFBDI + "\\" + WorkbookName + ext, sheet_name=SheetName)
-
     df = pd.DataFrame(read_file)
-    print("Original DataFrame:\n", df)
+    numRows = len(read_file)
+    Parent = [""] * 36
+    maxParent = 99
+    lastParentCol = 36
 
-    df_final = df
-    # Remove header
-    df_final.drop(df_final.index[[0, 1, 2]], axis=0, inplace=True)
-    
-    # Selecionar apenas as colunas a partir da 35ª coluna
-    df_final_selected = df_final.iloc[:, 28:]
-
-    # Concatenar os valores das colunas selecionadas em uma nova coluna, ignorando os valores NaN
-    df_final['Nova_Coluna'] = df_final_selected.apply(lambda row: ' '.join(str(val) for val in row if pd.notna(val)), axis=1)
-
-    def generate_parents(df):
-
-        numRows = len(df)
-        Parent = [""] * 36
-        maxParent = 99
-        lastParentCol = 36
-        import tqdm
-        print(tqdm.__version__)
-
-        breakpoint()
-        for i in tqdm(range(4, numRows)):
-            sPercentage = (i / numRows) * 100
-            sStatus = f"Processing {i + 1} of {numRows} rows of hierarchy"
-            
-            # Display progress status (you can replace this with actual progress bar updates if needed)
-            print(f"{sStatus} ({sPercentage:.2f}%)")
-            
-            if (df.iloc[i - 1, 2] != df.iloc[i, 2]) or (df.iloc[i - 1, 1] != df.iloc[i, 1]) or (df.iloc[i - 1, 0] != df.iloc[i, 0]):
-                Parent = [""] * 36
-                maxParent = 99
-                lastParent = ""
-            
-            for j in range(35, 5, -1):
-                if pd.notna(df.iloc[i, j]) and df.iloc[i, j] != "":
-                    df.at[i, 36] = df.iloc[i, j]
-                    if j == 35 and lastParent:
-                        df.at[i, 37] = lastParent
-                    elif Parent[j - 1] and lastParentCol >= j - 1:
-                        df.at[i, 37] = Parent[j - 1]
-                    elif maxParent == j or maxParent == 99:
-                        df.at[i, 37] = "None"
-                    else:
-                        print(f"Wrong Hierarchy for value at row {i + 1}. Please validate hierarchy and correct the errors.")
-                        df = df.drop(columns=df.columns[36:39])
-                        return -1
-                    
-                    Parent[j] = df.iloc[i, j]
-                    if j < maxParent:
-                        maxParent = j
-                    if j != 35:
-                        lastParent = df.iloc[i, j]
-                        lastParentCol = j
-                    break
+    for i in tqdm(range(3, numRows)):
+        sPercentage = (i / numRows) * 100
+        sStatus = f"Processing {i + 1} of {numRows} rows of hierarchy"
         
-        return 1
-    
+        # Display progress status (you can replace this with actual progress bar updates if needed)
+        # print(f"{sStatus} ({sPercentage:.2f}%)")
 
-    # Chamar a função para gerar os pais
-    generate_parents(df)
+        if (df.iloc[i - 1, 2] != df.iloc[i, 2]) or (df.iloc[i - 1, 1] != df.iloc[i, 1]) or (df.iloc[i - 1, 0] != df.iloc[i, 0]):
+            Parent = [""] * 36
+            maxParent = 99
+            lastParent = ""
+        
+        for j in range(35, 5, -1):
+            if pd.notna(df.iloc[i, j]) and df.iloc[i, j] != "":
+                df.at[i, 36] = df.iloc[i, j]
 
-    # Exibir o DataFrame resultante
-    print(df)
+                if j == 35 and lastParent:
+                    df.at[i, 37] = lastParent
+                elif Parent[j - 1] and lastParentCol >= j - 1:
+                    df.at[i, 37] = Parent[j - 1]
+                elif maxParent == j or maxParent == 99:
+                    df.at[i, 37] = "None"
+                else:
+                    print(f"Wrong Hierarchy for value at row {i + 1}. Please validate hierarchy and correct the errors.")
+                    df = df.drop(columns=df.columns[36:39])
+                    return -1
+                
+                Parent[j] = df.iloc[i, j]
+                if j < maxParent:
+                    maxParent = j
+                if j != 35:
+                    lastParent = df.iloc[i, j]
+                    lastParentCol = j
+                break
 
-    # breakpoint()
-    
-
-    # Definir o intervalo de colunas que deseja excluir
-    start_column = 5  # Índice da primeira coluna a ser excluída
-    end_column = 35   # Índice da última coluna a ser excluída (inclusive)
-
-    # Excluir as colunas dentro do intervalo especificado
-    df_final = df_final.drop(df_final.columns[start_column:end_column+1], axis=1)
-
-            # Get the number of rows in the DataFrame
     numRows = len(df)
 
     # Loop through rows from 5 to numRows
-    for i in range(4, numRows):
+    for i in range(3, numRows):
         flag = 0
         # Loop through columns from 36 to 6 (step -1)
         for j in range(35, 5, -1):
             # Check if the cell value is not empty
             if pd.notna(df.iloc[i, j]):
                 # Assign value to cell at index (i, 39)
-                df_final.at[i, 45] = j - 4
+                df.at[i, 39] = j - 4
+                float_number = df.at[i, 39]
+                string_number = str(float_number)
+                # Remove '.0' if present
+                if string_number.endswith('.0'):
+                    string_number = string_number[:-2]
+
+                df.at[i, 39] = string_number
                 flag = 1
                 break
         # If flag is still 0, exit loop
         if flag == 0:
             break
-    
-    # Exibir o DataFrame resultante
-    print(df_final)
 
-    # Convert to csv
-    df_final.to_csv(pathFBDI + "\\" + WorkbookName + '_melted.csv', index=False, header=None)
+    df.drop(df.index[[0, 1, 2]], axis=0, inplace=True)
 
-    # Uncomment the following lines if you want to zip the CSV
-    # import shutil
-    # shutil.make_archive(pathFBDI + "\\" + WorkbookName, 'zip', pathFBDI, WorkbookName + '_melted.csv')
+    # Definir o intervalo de colunas que deseja excluir
+    start_column = 5  # Índice da primeira coluna a ser excluída
+    end_column = 35   # Índice da última coluna a ser excluída (inclusive)
 
-# Example usage
-# FormatarFBDI('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia', 'GL_SEGMENT_HIER_INTERFACE', 'PP.OO.9.100 - Hierarquia de Projetos', '.xlsm')
+    # Excluir as colunas dentro do intervalo especificado
+    df = df.drop(df.columns[start_column:end_column+1], axis=1)
 
+    zip_name = 'GlSegmentHierInterface'
+
+    print(df)
+    df.to_csv(pathFBDI + "\\" + zip_name + '.csv', index=False, header=None)
+    shutil.make_archive(pathFBDI+"\\"+zip_name, 'zip', pathFBDI, zip_name+'.csv')
 
             
 if __name__ == "__main__":
