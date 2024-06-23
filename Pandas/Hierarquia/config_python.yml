@@ -27,3 +27,4 @@ folders:
 sharepoint_config_file_path: "Documentos%20Partilhados/FJI/FinancasCorporativas/HierarquizacaoDeProjetos"
 local_config_source_file_path: "Documents/DocPython/Pandas/Hierarquia/files/"
 local_config_destination_file_path: "Documents/DocPython/Pandas/Hierarquia/files/Hierarquia"
+local_config_destination_status_file_path: "Documents/DocPython/Pandas/Hierarquia"

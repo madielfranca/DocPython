@@ -18,9 +18,8 @@ import os
 config = Config()
  
 log = logger_setup(config.tag_processo, config.metricas.id_execucao)
-
-# Get the current date
 current_date = datetime.now().strftime('%Y-%m-%d')
+user_path = os.path.expanduser("~")
 
 @main_(config, log)
 def main() -> None:
@@ -28,35 +27,41 @@ def main() -> None:
     sharepoint = config.sharepoint_config_file_path
     source_file = config.local_config_source_file_path
     destination_directory = config.local_config_destination_file_path
+    destination_directory_status_file = config.local_config_destination_status_file_path
 
+    source_file = f'{user_path}/{source_file}'
+    destination_directory = f'{user_path}/{destination_directory}'
+    destination_directory_status_file = f'{user_path}/{destination_directory_status_file}'
+
+    arquivos_carga = os.listdir(source_file)
+
+    # Itera sobre cada item na pasta
+    for item in arquivos_carga:
+        caminho_completo = os.path.join(source_file, item)
+        # Verifica se é um arquivo e remove
+        if os.path.isfile(caminho_completo):
+            os.remove(caminho_completo)
+        # Verifica se é um diretório e remove
+        elif os.path.isdir(caminho_completo):
+            shutil.rmtree(caminho_completo)
+    #Baixa os arquivos necessarios do Share Point
     sharepoint_obj.download_all_files_from_folder(f"{sharepoint}/HierarquiaDeProjetos", "files")
     sharepoint_obj.download_all_files_from_folder(f"{sharepoint}/PlanilhaDeCarga", "files")
 
-    # Step 1: Specify the source file and destination directory
-    user_path = os.path.expanduser("~")
-
-    # source_file = f'{source_file}/PP.OO.9.100 - Hierarquia de Projetos.xlsm'
-    source_file = f'{user_path}/{source_file}'
-    destination_directory = f'{user_path}/{destination_directory}'
-  
-    # Ensure the destination directory exists
     os.makedirs(destination_directory, exist_ok=True)
 
-    # Step 2: Construct the full destination path
     destination_path = os.path.join(destination_directory, os.path.basename(f'{source_file}/PP.OO.9.100 - Hierarquia de Projetos.xlsm'))
-
-    # Step 3: Copy the file to the destination directory
+    
     shutil.move(f'{source_file}/PP.OO.9.100 - Hierarquia de Projetos.xlsm', destination_path)
     print(f'Copied {f'{source_file}/PP.OO.9.100 - Hierarquia de Projetos.xlsm'} to {destination_path}')
 
-    # Loop through all files in the root folder and its subfolders
+    # Percorra todos os arquivos na pasta raiz e suas subpastas
     for folder_path, _, filenames in os.walk(source_file):
         for filename in filenames:
             # Process the file
             if 'Hierarquia' in filename :
                 break
             else:
-                print(folder_path+filename)
                 hierarquia10_obj=Hierarquia10Caracteres(folder_path+filename, 'GL_SEGMENT_VALUES_INTERFACE', f'{folder_path}/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', 'GL_SEGMENT_HIER_INTERFACE', filename)
                 hierarquia12_obj=Hierarquia12Caracteres(folder_path+filename, 'GL_SEGMENT_VALUES_INTERFACE', f'{folder_path}/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', 'GL_SEGMENT_HIER_INTERFACE', filename)
                 hierarquia13_obj=Hierarquia13Caracteres(folder_path+filename, 'GL_SEGMENT_VALUES_INTERFACE', f'{folder_path}/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', 'GL_SEGMENT_HIER_INTERFACE', filename)
@@ -70,15 +75,13 @@ def main() -> None:
                     print('falhou')
     arquivo_log = f'HierarquiaStatus_{current_date}.xlsx'
 
-    # sharepoint_obj.upload_file(f"{sharepoint}/HierarquiaDeProjetos", "C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia", "PP.OO.9.100 - Hierarquia de Projetos.xlsm")
-    sharepoint_obj.upload_file(f"{sharepoint}/StatusExecucaoRobo", destination_directory, arquivo_log)
+    sharepoint_obj.upload_file(f"{sharepoint}/StatusExecucaoRobo", destination_directory_status_file, arquivo_log)
 
 def limpa_arquivo_log_dia_anterior():
 
-    # Get the current date
     data_atual = datetime.now()
-    print(data_atual)
-    # Calculate the previous day
+
+    # Calcular o dia anterior
     previous_day = data_atual - timedelta(days=1)
     previous_day.strftime("%Y-%m-%d")
 
@@ -90,10 +93,7 @@ def limpa_arquivo_log_dia_anterior():
 def validar_projetos_sem_hierarquia():
     values_to_add  = []
     arquivo_log = f'HierarquiaStatus_{current_date}.xlsx'
-
     df_status = pd.read_excel(f'C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/{arquivo_log}', engine='openpyxl')
-    
-
     caminho_pasta   = 'C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/'
 
     # Lista para armazenar os DataFrames
@@ -106,7 +106,6 @@ def validar_projetos_sem_hierarquia():
             df = pd.read_excel(caminho_arquivo, 'GL_SEGMENT_VALUES_INTERFACE')
             lista_dfs.append(df)
 
-    # Combina todos os DataFrames em um único DataFrame
     df_combinado = pd.concat(lista_dfs, ignore_index=True)
 
 
@@ -118,22 +117,43 @@ def validar_projetos_sem_hierarquia():
                 for row in df_status.index:
                     valor_status = df_status['Status'][row]
                     nome_status = df_status['Arquivo'][row]
-
                     if valor_carga in valor_status:
-                        print(f"Value found in file: {valor_carga}")
                         encontrado = True
                    
                 if encontrado == False:
-                    print(f"Value not found in file: {valor_carga}")
-                    values_to_add.append("Erro na hierarquia."+ valor_carga)
-                 
+                    values_to_add.append("Erro na hierarquia."+ valor_carga)                
                     break   
+
     LogStatus_obj=LogStatus(values_to_add, nome_status)
-    print('------------')
-    print('------------')
-    breakpoint()
     LogStatus_obj.logar()
 
+def move_arquivos():
+    sharepoint_obj = spf.SharePointFunctions_ctx(site_name="InterfacesRCA")
+    sharepoint = config.sharepoint_config_file_path
+    destination_directory = config.local_config_destination_file_path
+    destination_directory = f'{user_path}/{destination_directory}'
+    destination_directory_temp = f'{destination_directory}/temp'
+
+    # Especifica o caminho para a pasta
+    nome_antigo = 'PP.OO.9.100 - Hierarquia de Projetos.xlsm'
+    nome_novo = f'Hierarquia-de-Projetos-{current_date}.xlsm'
+
+    # Caminhos completos dos arquivos
+    caminho_antigo = os.path.join(destination_directory, nome_novo)
+    caminho_novo = os.path.join(destination_directory_temp, nome_antigo)
+
+    os.makedirs(destination_directory_temp, exist_ok=True)
+    shutil.copy(f'{destination_directory}/{nome_antigo}', destination_directory_temp)
+
+    # Verifica se o arquivo existe
+    if os.path.isfile(caminho_novo):
+        os.rename(caminho_novo, caminho_antigo)
+
+    shutil.move(f'{destination_directory}/{nome_novo}', destination_directory_temp)
+ 
+    # sharepoint_obj.delete_all_files_from_folder(f"{sharepoint}/PlanilhaDeCarga")
+    sharepoint_obj.upload_all_files_from_folder(f"{sharepoint}/PlanilhaDeCarga/Processados", "files")
+    sharepoint_obj.upload_all_files_from_folder(f"{sharepoint}/HierarquiaDeProjetos/Backup", "files/Hierarquia/temp")
 
 def FormatarFBDI(pathFBDI, SheetName, WorkbookName, ext):
     read_file = pd.read_excel(pathFBDI + "\\" + WorkbookName + ext, sheet_name=SheetName)
@@ -144,11 +164,6 @@ def FormatarFBDI(pathFBDI, SheetName, WorkbookName, ext):
     lastParentCol = 36
 
     for i in tqdm(range(3, numRows)):
-        sPercentage = (i / numRows) * 100
-        sStatus = f"Processing {i + 1} of {numRows} rows of hierarchy"
-        
-        # Display progress status (you can replace this with actual progress bar updates if needed)
-        # print(f"{sStatus} ({sPercentage:.2f}%)")
 
         if (df.iloc[i - 1, 2] != df.iloc[i, 2]) or (df.iloc[i - 1, 1] != df.iloc[i, 1]) or (df.iloc[i - 1, 0] != df.iloc[i, 0]):
             Parent = [""] * 36
@@ -180,25 +195,25 @@ def FormatarFBDI(pathFBDI, SheetName, WorkbookName, ext):
 
     numRows = len(df)
 
-    # Loop through rows from 5 to numRows
+    # Percorrer as linhas de 3 a numRows
     for i in range(3, numRows):
         flag = 0
-        # Loop through columns from 36 to 6 (step -1)
+        # Percorra as colunas de 35 a 5 (etapa -1)
         for j in range(35, 5, -1):
-            # Check if the cell value is not empty
+            # Verifique se o valor da célula não está vazio
             if pd.notna(df.iloc[i, j]):
-                # Assign value to cell at index (i, 39)
+                # Atribuir valor à célula no índice (i, 39)
                 df.at[i, 39] = j - 4
                 float_number = df.at[i, 39]
                 string_number = str(float_number)
-                # Remove '.0' if present
+                # Remove '.0' se presente
                 if string_number.endswith('.0'):
                     string_number = string_number[:-2]
 
                 df.at[i, 39] = string_number
                 flag = 1
                 break
-        # If flag is still 0, exit loop
+        # Se o sinalizador ainda for 0, saia do loop
         if flag == 0:
             break
 
@@ -213,14 +228,14 @@ def FormatarFBDI(pathFBDI, SheetName, WorkbookName, ext):
 
     zip_name = 'GlSegmentHierInterface'
 
-    print(df)
     df.to_csv(pathFBDI + "\\" + zip_name + '.csv', index=False, header=None)
     shutil.make_archive(pathFBDI+"\\"+zip_name, 'zip', pathFBDI, zip_name+'.csv')
 
             
 if __name__ == "__main__":
  
-    # main()
-    # limpa_arquivo_log_dia_anterior()
-    # validar_projetos_sem_hierarquia()
+    main()
+    limpa_arquivo_log_dia_anterior()
+    validar_projetos_sem_hierarquia()
+    move_arquivos()
     FormatarFBDI('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia', 'GL_SEGMENT_HIER_INTERFACE', 'PP.OO.9.100 - Hierarquia de Projetos', '.xlsm')
