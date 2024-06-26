@@ -2,7 +2,9 @@ from globo_automacoes.decoradores import retry
 from src.LogStatus import LogStatus
 from openpyxl import load_workbook
 import pandas as pd
-import math
+import logging
+
+log = logging.getLogger(__name__)
 
 class Hierarquia12Caracteres:
     def __init__(self, projeto_carga_excel_path, projeto_carga_sheet_name, projeto_hierarquia_excel_path, projeto_hierarquia_sheet_name, filename) -> None:
@@ -12,6 +14,7 @@ class Hierarquia12Caracteres:
 
     @retry(3, Exception)
     def validar_projetos_12_caracteres(self):
+        log.info("Iniciando execução da task Hierarquia 12 caracteres")    
 
         df_carga = self.df_carga
         file_name_caraga = self.filename
@@ -131,6 +134,7 @@ class Hierarquia12Caracteres:
 
         # Salva o workbook atualizado
         book.save(arquivo_excel)
+        log.info("Hierarquia 12 caracteres executado com sucesso")
 
 
             

@@ -42,5 +42,3 @@ class LogStatus:
 
         except Exception as e:
             logging.error(f'Error occurred: {e}')
-
-        logging.info('Script finished.')

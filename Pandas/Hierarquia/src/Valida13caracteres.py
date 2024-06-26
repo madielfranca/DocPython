@@ -2,8 +2,10 @@ from globo_automacoes.decoradores import retry
 from openpyxl import load_workbook
 from src.LogStatus import LogStatus
 import pandas as pd
+import logging
 import math
 
+log = logging.getLogger(__name__)
 class Hierarquia13Caracteres:
     def __init__(self, projeto_carga_excel_path, projeto_carga_sheet_name, projeto_hierarquia_excel_path, projeto_hierarquia_sheet_name, filename) -> None:
         self.df_carga = pd.read_excel(projeto_carga_excel_path, sheet_name=projeto_carga_sheet_name, header=0)
@@ -12,8 +14,8 @@ class Hierarquia13Caracteres:
 
     @retry(3, Exception)
     def validar_projetos_13_caracteres(self):
-        # print(self.df_carga)
-
+        log.info("Iniciando execução da task Hierarquia 13 caracteres")    
+        
         df_carga = self.df_carga
         df_hierarquia = pd.read_excel('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', sheet_name='GL_SEGMENT_HIER_INTERFACE', header=0)
         values_to_add  = []
@@ -265,6 +267,7 @@ class Hierarquia13Caracteres:
 
         # Salva o workbook atualizado
         book.save(arquivo_excel)
+        log.info("Hierarquia 13 caracteres executado com sucesso")
 
 
             

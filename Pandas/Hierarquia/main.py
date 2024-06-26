@@ -5,24 +5,29 @@ from src.Valida13caracteres import Hierarquia13Caracteres
 from src.Valida16caracteres import Hierarquia16Caracteres
 from globo_automacoes.decoradores import main_, retry
 from globo_automacoes.logger import logger_setup
+from globo_automacoes.emails import AutomacoesEmail
 from datetime import datetime, timedelta
 from src.LogStatus import LogStatus
 from libs.config import Config
 from tqdm import tqdm  # For displaying progress bar
 import pandas as pd
 import numpy as np
+import logging
 import shutil
 import math
 import os
 
 config = Config()
  
-log = logger_setup(config.tag_processo, config.metricas.id_execucao)
 current_date = datetime.now().strftime('%Y-%m-%d')
 user_path = os.path.expanduser("~")
 
-@main_(config, log)
+@main_(config)
 def main() -> None:
+     
+    log = logging.getLogger(__name__)
+    obj_email = AutomacoesEmail()
+
     sharepoint_obj = spf.SharePointFunctions_ctx(site_name="InterfacesRCA")
     sharepoint = config.sharepoint_config_file_path
     source_file = config.local_config_source_file_path
@@ -66,18 +71,23 @@ def main() -> None:
                 hierarquia12_obj=Hierarquia12Caracteres(folder_path+filename, 'GL_SEGMENT_VALUES_INTERFACE', f'{folder_path}/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', 'GL_SEGMENT_HIER_INTERFACE', filename)
                 hierarquia13_obj=Hierarquia13Caracteres(folder_path+filename, 'GL_SEGMENT_VALUES_INTERFACE', f'{folder_path}/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', 'GL_SEGMENT_HIER_INTERFACE', filename)
                 hierarquia16_obj=Hierarquia16Caracteres(folder_path+filename, 'GL_SEGMENT_VALUES_INTERFACE', f'{folder_path}/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', 'GL_SEGMENT_HIER_INTERFACE', filename)
-                try:        
+                try:
+                    # variavel_aqui = 'teste'
+                    # log.info("Hierarquia 10 caracteres executado com sucesso %s", variavel_aqui)
+
                     hierarquia10_obj.validar_projetos_10_caracteres()
                     hierarquia12_obj.validar_projetos_12_caracteres()
                     hierarquia13_obj.validar_projetos_13_caracteres()
                     hierarquia16_obj.validar_projetos_16_caracteres()
                 except Exception:
+                    obj_email.enviar_email()
+                    log.error()
                     print('falhou')
-    arquivo_log = f'HierarquiaStatus_{current_date}.xlsx'
 
-    sharepoint_obj.upload_file(f"{sharepoint}/StatusExecucaoRobo", destination_directory_status_file, arquivo_log)
+
 
 def limpa_arquivo_log_dia_anterior():
+    log = logging.getLogger(__name__)
 
     data_atual = datetime.now()
 
@@ -88,9 +98,13 @@ def limpa_arquivo_log_dia_anterior():
     file_path = f'HierarquiaStatus_{previous_day.strftime("%Y-%m-%d")}.xlsx'
 
     if os.path.exists(file_path):
+
+        log.info("Removendo Arquivo log dia anterior %s", file_path)
         os.remove(file_path)
 
 def validar_projetos_sem_hierarquia():
+    log = logging.getLogger(__name__)
+
     values_to_add  = []
     arquivo_log = f'HierarquiaStatus_{current_date}.xlsx'
     df_status = pd.read_excel(f'C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/{arquivo_log}', engine='openpyxl')
@@ -126,14 +140,18 @@ def validar_projetos_sem_hierarquia():
 
     LogStatus_obj=LogStatus(values_to_add, nome_status)
     LogStatus_obj.logar()
+    log.info("Validando projetos sem hierarquia")
 
-def move_arquivos():
+def move_arquivos_SharePoint():
+    log = logging.getLogger(__name__)
     sharepoint_obj = spf.SharePointFunctions_ctx(site_name="InterfacesRCA")
     sharepoint = config.sharepoint_config_file_path
     destination_directory = config.local_config_destination_file_path
     destination_directory = f'{user_path}/{destination_directory}'
     destination_directory_temp = f'{destination_directory}/temp'
-
+    destination_directory_status_file = config.local_config_destination_status_file_path
+    destination_directory_status_file = f'{user_path}/{destination_directory_status_file}'
+    arquivo_log = f'HierarquiaStatus_{current_date}.xlsx'
     # Especifica o caminho para a pasta
     nome_antigo = 'PP.OO.9.100 - Hierarquia de Projetos.xlsm'
     nome_novo = f'Hierarquia-de-Projetos-{current_date}.xlsm'
@@ -152,10 +170,16 @@ def move_arquivos():
     shutil.move(f'{destination_directory}/{nome_novo}', destination_directory_temp)
  
     # sharepoint_obj.delete_all_files_from_folder(f"{sharepoint}/PlanilhaDeCarga")
-    sharepoint_obj.upload_all_files_from_folder(f"{sharepoint}/PlanilhaDeCarga/Processados", "files")
+    # sharepoint_obj.upload_all_files_from_folder(f"{sharepoint}/PlanilhaDeCarga/Processados", "files")
     sharepoint_obj.upload_all_files_from_folder(f"{sharepoint}/HierarquiaDeProjetos/Backup", "files/Hierarquia/temp")
+        
+    sharepoint_obj.upload_file(f"{sharepoint}/HierarquiaDeProjetos", "C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia", "PP.OO.9.100 - Hierarquia de Projetos.xlsm")
+    sharepoint_obj.upload_file(f"{sharepoint}/StatusExecucaoRobo", destination_directory_status_file, arquivo_log)
+    log.info("Movendo arquivos no SharePoint")
 
 def FormatarFBDI(pathFBDI, SheetName, WorkbookName, ext):
+    log = logging.getLogger(__name__)
+    log.info("Formatando arquivo FBDI")
     read_file = pd.read_excel(pathFBDI + "\\" + WorkbookName + ext, sheet_name=SheetName)
     df = pd.DataFrame(read_file)
     numRows = len(read_file)
@@ -222,7 +246,7 @@ def FormatarFBDI(pathFBDI, SheetName, WorkbookName, ext):
     # Definir o intervalo de colunas que deseja excluir
     start_column = 5  # Índice da primeira coluna a ser excluída
     end_column = 35   # Índice da última coluna a ser excluída (inclusive)
-
+    log.info("Zipando arquivo FBDI") 
     # Excluir as colunas dentro do intervalo especificado
     df = df.drop(df.columns[start_column:end_column+1], axis=1)
 
@@ -237,5 +261,5 @@ if __name__ == "__main__":
     main()
     limpa_arquivo_log_dia_anterior()
     validar_projetos_sem_hierarquia()
-    move_arquivos()
+    move_arquivos_SharePoint()
     FormatarFBDI('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia', 'GL_SEGMENT_HIER_INTERFACE', 'PP.OO.9.100 - Hierarquia de Projetos', '.xlsm')
