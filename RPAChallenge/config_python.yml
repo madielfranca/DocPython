@@ -1,0 +1,20 @@
+mode: DEV
+nome_processo: HierarquiaDeProjetos
+process_name: HierarquiaDeProjetos
+tag_processo: P5494
+area: Finanças Corporativas
+ 
+prd:
+  teste: teste
+ 
+hml:
+  teste: teste
+ 
+dev:
+  numeros_aceitos: teste
+
+
+rpa_challenge_config_file_path: "https://rpachallenge.com"
+local_config_source_file_path: "Documents/DocPython/Pandas/Hierarquia/files/"
+local_config_destination_file_path: "Documents/DocPython/Pandas/Hierarquia/files/Hierarquia"
+local_config_destination_status_file_path: "Documents/DocPython/Pandas/Hierarquia"
