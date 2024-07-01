@@ -11,15 +11,18 @@ class Form:
         self.url_formulario = url_formulario
 
     def inputForms(self):
-
         # Lê a planilha
         df = pd.read_excel(self.caminho_planilha)
 
-        # Configuração do Selenium
+        # Configura o Selenium
         options = webdriver.ChromeOptions()
         driver = webdriver.Chrome(options=options)
 
         driver.get(self.url_formulario)
+        time.sleep(3)
+
+        # Maximiza a janela do navegador
+        driver.maximize_window()
 
         # Aguarda até que a página carregue
         wait = WebDriverWait(driver, 10)
@@ -59,15 +62,15 @@ class Form:
             # Envia o formulário
             try:
                 time.sleep(3)
-                # submit_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@type='submit' or @type='button' or @type='image' or @type='reset']")))
                 submit_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@type='submit']")))
                 submit_button.click()
             except Exception as e:
                 print(f"Erro ao enviar o formulário: {e}")
             
             # Aguarda a página recarregar e os campos mudarem de posição
-            time.sleep(2)  # Ajuste o tempo conforme necessário
+            time.sleep(2)
 
         # Fechaa o navegador
         time.sleep(10)
         driver.quit()
+
