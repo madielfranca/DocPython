@@ -48,10 +48,10 @@ class Move_arquivos_SharePoint:
 
         shutil.move(f'{destination_directory}/{nome_novo}', destination_directory_temp)
     
-        sharepoint_obj.delete_all_files_from_folder(f"{sharepoint}/PlanilhaDeCarga")
-        sharepoint_obj.upload_all_files_from_folder(f"{sharepoint}/PlanilhaDeCarga/Processados", "files")
-        sharepoint_obj.upload_all_files_from_folder(f"{sharepoint}/HierarquiaDeProjetos/Backup", "files/Hierarquia/temp")
+        # sharepoint_obj.delete_all_files_from_folder(f"{sharepoint}/PlanilhaDeCarga")
+        # sharepoint_obj.upload_all_files_from_folder(f"{sharepoint}/PlanilhaDeCarga/Processados", "files")
+        # sharepoint_obj.upload_all_files_from_folder(f"{sharepoint}/HierarquiaDeProjetos/Backup", "files/Hierarquia/temp")
             
-        sharepoint_obj.upload_file(f"{sharepoint}/HierarquiaDeProjetos", "C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia", "PP.OO.9.100 - Hierarquia de Projetos.xlsm")
-        sharepoint_obj.upload_file(f"{sharepoint}/StatusExecucaoRobo", destination_directory_status_file, arquivo_log)
+        # sharepoint_obj.upload_file(f"{sharepoint}/HierarquiaDeProjetos", "C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia", "PP.OO.9.100 - Hierarquia de Projetos.xlsm")
+        # sharepoint_obj.upload_file(f"{sharepoint}/StatusExecucaoRobo", destination_directory_status_file, arquivo_log)
         log.info("Movendo arquivos no SharePoint")

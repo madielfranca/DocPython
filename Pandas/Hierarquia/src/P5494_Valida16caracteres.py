@@ -3,6 +3,7 @@ from src.LogStatus import LogStatus
 from openpyxl import load_workbook
 import pandas as pd
 import logging
+import math
 
 log = logging.getLogger(__name__)
 
@@ -17,7 +18,7 @@ class Hierarquia16Caracteres:
         log.info("Iniciando execução da task Hierarquia 16 caracteres")    
 
         df_carga = self.df_carga
-        df_hierarquia = pd.read_excel('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', sheet_name='GL_SEGMENT_HIER_INTERFACE', header=0)
+        df_hierarquia = self.df_hierarquia
         values_to_add  = []
         file_name_caraga = self.filename
         for row in df_carga.index:
@@ -79,37 +80,97 @@ class Hierarquia16Caracteres:
                                             if not isinstance(ColValue, str) or ColValue == "nan":
                 
                                                 if  contador > 0: 
-                                                    lista_sem_ultima = minha_lista[:-1]
-                                                    ultimo_valor = lista_sem_ultima[-1]
+                                                       # Encontre o índice do valor na coluna 'Unnamed: 35'
+                                                    def validar_primeiras_letras(string, letras):
+                                                        return string[:4] == letras
 
-                                                    # Encontre o índice do valor na coluna ''Unnamed: 35''
-                                                    indice = df_hierarquia.index[df_hierarquia['Unnamed: 35'] == ultimo_valor].tolist()
-                                                    
-                                                    df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]+1], nova_linha, df_hierarquia.iloc[indice[0]+1:]], ignore_index=True)
-                                                    
-                                                    df_hierarquia.at[indice[0]+1, 'Unnamed: 35'] = valores_projeto_carga
-                                                    df_hierarquia.at[indice[0]+1, 'Unnamed: 0'] = setCode
-                                                    df_hierarquia.at[indice[0]+1, 'Unnamed: 1'] = treeCode
-                                                    df_hierarquia.at[indice[0]+1, 'Unnamed: 2'] = treeCodeVersion
-                                                    df_hierarquia.at[indice[0]+1, 'Unnamed: 3'] = treeCodeVersionDate
-                                                    values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
+                                                    # Entrada do usuário
+                                                    string_teste = valores_projeto_carga
+                                                    letras_desejadas = "CFJI"
+                                                    # Validação
+                                                    if validar_primeiras_letras(string_teste, letras_desejadas):
+                                                        ColValue = df_hierarquia.at[c, 'Unnamed: 34']
+                                                    else:
+                                                        lista_sem_ultima = minha_lista[:-1]
+                                                        ultimo_valor = lista_sem_ultima[-1]
+
+                                                        # Encontre o índice do valor na coluna ''Unnamed: 35''
+                                                        indice = df_hierarquia.index[df_hierarquia['Unnamed: 35'] == ultimo_valor].tolist()
+                                                        # teste = int(000)
+                                                        df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]+1], nova_linha, df_hierarquia.iloc[indice[0]+1:]], ignore_index=True)
+
+                                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 35'] = valores_projeto_carga
+                                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 0'] = setCode
+                                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 1'] = treeCode
+                                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 2'] = treeCodeVersion
+                                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 3'] = treeCodeVersionDate
+                                                        values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
 
                                                     break
                                                 else:
-                                                    ColValue = df_hierarquia.at[i-2, 'Unnamed: 33']
-                                                    indice = df_hierarquia.index[df_hierarquia['Unnamed: 33'] == ColValue].tolist()
+                                                    # Encontre o índice do valor na coluna 'Unnamed: 35'
+                                                    def validar_primeiras_letras(string, letras):
+                                                        return string[:4] == letras
 
-                                                    df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]+1], nova_linha, df_hierarquia.iloc[indice[0]+1:]], ignore_index=True)
-                                                    df_hierarquia.at[indice[0]+1, 'Unnamed: 35'] = valores_projeto_carga
-                                                    df_hierarquia.at[indice[0]+1, 'Unnamed: 0'] = setCode
-                                                    df_hierarquia.at[indice[0]+1, 'Unnamed: 1'] = treeCode
-                                                    df_hierarquia.at[indice[0]+1, 'Unnamed: 2'] = treeCodeVersion
-                                                    df_hierarquia.at[indice[0]+1, 'Unnamed: 3'] = treeCodeVersionDate
-                                                
-                                                    values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
+                                                    # Entrada do usuário
+                                                    string_teste = valores_projeto_carga
+                                                    letras_desejadas = "CFJI"
+                                                    # Validação
+                                                    if validar_primeiras_letras(string_teste, letras_desejadas):
+                                                        for c in range(row, len(df_hierarquia)):
+                                                            ColValue = df_hierarquia.at[c, 'Unnamed: 34']
+                                                            print(ColValue)
 
-                                                    break
+                                                            if not (ColValue is None or (isinstance(ColValue, float) and math.isnan(ColValue))):
+                                                                ultimos_tres_caracteres_carga = valores_projeto_carga[-9:]
+                                                                ultimos_tres_caracteres_carga = ultimos_tres_caracteres_carga[:-3]
+                                                                ultimos_tres_caracteres_carga = int(ultimos_tres_caracteres_carga)
+                                                                ultimos_tres_caracteres_ColValue = ColValue[-8:]
 
+                                                                ultimos_tres_caracteres_ColValue = int(ultimos_tres_caracteres_ColValue)
+                                                                print('inicio')                                                                
+                                                                print(ultimos_tres_caracteres_carga)
+                                                                print(ultimos_tres_caracteres_ColValue)
+                                                                print(valores_projeto_carga)
+                                                                print(ColValue)
+                                                                # breakpoint()    
+                                                                if ultimos_tres_caracteres_carga < ultimos_tres_caracteres_ColValue:
+                                                                    indice = df_hierarquia.index[df_hierarquia['Unnamed: 34'] == ColValue].tolist()
+                                                                    df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]], nova_linha, df_hierarquia.iloc[indice[0]:]], ignore_index=True)
+                                                                    # df_hierarquia.at[indice[0], 'Unnamed: 35'] = valores_projeto_carga
+                                                                    df_hierarquia.at[indice[0], 'Unnamed: 35'] = valores_projeto_carga
+                                                                    df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
+                                                                    df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCode
+                                                                    df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
+                                                                    df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
+                                                                    break
+                                                                else:
+                                                                    print(ultimos_tres_caracteres_carga)
+                                                                    print(ultimos_tres_caracteres_ColValue)
+                                                                    print('else')
+                                                                    # breakpoint()    
+
+                                                    else:
+                                                        print('inicio')                                                                
+                                                        print(valores_projeto_carga)
+                                                        print(ColValue)
+                                                        # breakpoint()   
+                                                        # teste = int(333)
+                                                        ColValue = df_hierarquia.at[i-2, 'Unnamed: 33']
+                                                        indice = df_hierarquia.index[df_hierarquia['Unnamed: 33'] == ColValue].tolist()
+
+                                                        df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]+1], nova_linha, df_hierarquia.iloc[indice[0]+1:]], ignore_index=True)
+                                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 35'] = valores_projeto_carga
+                                                        # df_hierarquia.at[indice[0]+1, 'Unnamed: 35'] = f'{valores_projeto_carga}{teste}'
+                                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 0'] = setCode
+                                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 1'] = treeCode
+                                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 2'] = treeCodeVersion
+                                                        df_hierarquia.at[indice[0]+1, 'Unnamed: 3'] = treeCodeVersionDate
+                                                    
+                                                        values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
+
+                                                        break
+                                                break
                                             else:
                                                 contador += 1
                 
@@ -127,23 +188,63 @@ class Hierarquia16Caracteres:
                                                 print("O projeto duplicado.", valores_projeto_carga)
                                                 values_to_add.append("O projeto duplicado."+ valores_projeto_carga)
                                                 break
+                                             # Encontre o índice do valor na coluna 'Unnamed: 35'
+                                            def validar_primeiras_letras(string, letras):
+                                                return string[:4] == letras
 
-                                            if ultimos_tres_caracteres_carga < ultimos_tres_caracteres_ColValue:
+                                            # Entrada do usuário
+                                            string_teste = valores_projeto_carga
+                                            letras_desejadas = "CFJI"  
+                                            if validar_primeiras_letras(string_teste, letras_desejadas):
+                                                for c in range(row, len(df_hierarquia)):
+                                                    ColValue = df_hierarquia.at[c, 'Unnamed: 34']
+
+                                                    if not (ColValue is None or (isinstance(ColValue, float) and math.isnan(ColValue))):
+                                                        ultimos_tres_caracteres_carga = valores_projeto_carga[-9:]
+                                                        ultimos_tres_caracteres_carga = ultimos_tres_caracteres_carga[:-3]
+                                                        ultimos_tres_caracteres_carga = int(ultimos_tres_caracteres_carga)
+                                                        ultimos_tres_caracteres_ColValue = ColValue[-8:]
+
+                                                        ultimos_tres_caracteres_ColValue = int(ultimos_tres_caracteres_ColValue)
+                                                      
+                                                        if ultimos_tres_caracteres_carga < ultimos_tres_caracteres_ColValue:
+                                                            indice = df_hierarquia.index[df_hierarquia['Unnamed: 34'] == ColValue].tolist()
+
+                                                            df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]-2], nova_linha, df_hierarquia.iloc[indice[0]-2:]], ignore_index=True)
+                                                            # df_hierarquia.at[indice[0]-2, 'Unnamed: 35'] = valores_projeto_carga
+                                                            df_hierarquia.at[indice[0]-2, 'Unnamed: 35'] = valores_projeto_carga
+                                                            df_hierarquia.at[indice[0]-2, 'Unnamed: 0'] = setCode
+                                                            df_hierarquia.at[indice[0]-2, 'Unnamed: 2'] = treeCode
+                                                            df_hierarquia.at[indice[0]-2, 'Unnamed: 2'] = treeCodeVersion
+                                                            df_hierarquia.at[indice[0]-2, 'Unnamed: 3'] = treeCodeVersionDate
+                                                            break
+                                                        else:
+                                                            print(ultimos_tres_caracteres_carga)
+                                                            print(ultimos_tres_caracteres_ColValue)
+                                                            print('else')
+                                                            # breakpoint()    
+
+                                            elif ultimos_tres_caracteres_carga < ultimos_tres_caracteres_ColValue:
+
                                                 print("Projeto Incluido com sucesso.", valores_projeto_carga)
                                                 values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
 
                                                 # Encontre o índice do valor na coluna ''Unnamed: 35''
                                                 indice = df_hierarquia.index[df_hierarquia['Unnamed: 35'] == ColValue].tolist()
                                                 
-                                                df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]], nova_linha, df_hierarquia.iloc[indice[0]:]], ignore_index=True)
                                                 
-                                                df_hierarquia.at[indice[0], 'Unnamed: 35'] = valores_projeto_carga
+                                                df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]], nova_linha, df_hierarquia.iloc[indice[0]:]], ignore_index=True)
+                                                teste = int(777)
+                                                df_hierarquia.at[indice[0], 'Unnamed: 35'] = f'{valores_projeto_carga}{teste}'
                                                 df_hierarquia.at[indice[0], 'Unnamed: 0'] = setCode
                                                 df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
                                                 df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
                                                 df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
 
                                                 break
+                                           
+                                        break
+                                        # break
 
                 else:
                     # print("O projeto", valores_projeto_carga, " não possui letras validas, quantidade de letras .",quantidade_caracteres) 
