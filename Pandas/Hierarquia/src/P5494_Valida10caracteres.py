@@ -6,22 +6,22 @@ import logging
 
 log = logging.getLogger(__name__)
 
-
 class Hierarquia10Caracteres:
     def __init__(self, projeto_carga_excel_path, projeto_carga_sheet_name, projeto_hierarquia_excel_path, projeto_hierarquia_sheet_name, filename) -> None:
         self.df_carga = pd.read_excel(projeto_carga_excel_path, sheet_name=projeto_carga_sheet_name, header=0)
         self.df_hierarquia = pd.read_excel(projeto_hierarquia_excel_path, sheet_name=projeto_hierarquia_sheet_name, header=0)
+        self.projeto_hierarquia_excel_path = projeto_hierarquia_excel_path
         self.filename = filename
 
-    # @task()
     @retry(3, Exception)
     def validar_projetos_10_caracteres(self):
         log.info("Iniciando execução da task Hierarquia 10 caracteres")        
         
-        df_carga = self.df_carga
+        projeto_hierarquia_excel_path = self.projeto_hierarquia_excel_path
         df_hierarquia = self.df_hierarquia
-        values_to_add  = []
         file_name_caraga = self.filename
+        df_carga = self.df_carga
+        values_to_add  = []
 
         for row in df_carga.index:
             #Verifica se o nome da coluna é 'Unnamed'
@@ -122,7 +122,8 @@ class Hierarquia10Caracteres:
         LogStatus_obj.logar()
 
         # Caminho para o arquivo Excel existente
-        arquivo_excel = 'C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm'
+        # arquivo_excel = 'C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm'
+        arquivo_excel = projeto_hierarquia_excel_path
 
         # Carrega o DataFrame novo com os dados que deseja atualizar
         df_novo = df_hierarquia

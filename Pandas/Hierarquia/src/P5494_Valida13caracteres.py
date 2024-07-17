@@ -9,13 +9,14 @@ class Hierarquia13Caracteres:
         self.df_carga = pd.read_excel(projeto_carga_excel_path, sheet_name=projeto_carga_sheet_name, header=0)
         self.df_hierarquia = pd.read_excel(projeto_hierarquia_excel_path, sheet_name=projeto_hierarquia_sheet_name, header=0)
         self.filename = filename
+        self.projeto_hierarquia_excel_path = projeto_hierarquia_excel_path
 
     @retry(3, Exception)
     def validar_projetos_13_caracteres(self):
-        # print(self.df_carga)
-
         df_carga = self.df_carga
-        df_hierarquia = self.df_hierarquia
+        # df_hierarquia = self.df_hierarquia
+        df_hierarquia = pd.read_excel('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', sheet_name='GL_SEGMENT_HIER_INTERFACE', header=0)
+        projeto_hierarquia_excel_path = self.projeto_hierarquia_excel_path
         values_to_add  = []
         file_name_caraga = self.filename
         for row in df_carga.index:
@@ -87,8 +88,6 @@ class Hierarquia13Caracteres:
                                                 df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]], nova_linha, df_hierarquia.iloc[indice[0]:]], ignore_index=True)
                                                 
                                                 if primeira_letra.startswith(('C')): 
-                                                    print(ultimos_tres_caracteres_carga) 
-                                                    print(ultimos_tres_caracteres_ColValue) 
                                                     if ultimos_tres_caracteres_carga == ultimos_tres_caracteres_ColValue:
                                                         print("O projeto duplicado.", valores_projeto_carga)
                                                         values_to_add.append("O projeto duplicado."+ valores_projeto_carga)
@@ -106,6 +105,7 @@ class Hierarquia13Caracteres:
                                                 df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
                                                 df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
                                                 values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
+                                                print(valores_projeto_carga)
 
                                                 break
                                             else:
@@ -122,6 +122,7 @@ class Hierarquia13Caracteres:
                                                 df_hierarquia.at[indice[0]+1, 'Unnamed: 3'] = treeCodeVersionDate
                                             
                                                 values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
+                                                print("Projeto Incluido com sucesso."+ valores_projeto_carga)
 
                                                 break
                                         else:
@@ -146,8 +147,7 @@ class Hierarquia13Caracteres:
 
                                                         if ultimos_tres_caracteres_carga == ultimos_tres_caracteres_ColValue:
                                                             print("O projeto duplicado.", valores_projeto_carga)
-                                                            values_to_add.append("O projeto duplicado."+ valores_projeto_carga)
-                                                            
+                                                            values_to_add.append("O projeto duplicado."+ valores_projeto_carga)                                                            
                                                             break
                                                 
                                                         if ultimos_tres_caracteres_carga < ultimos_tres_caracteres_ColValue and comparaCaractereP1 != comparaCaractereP2:
@@ -164,15 +164,8 @@ class Hierarquia13Caracteres:
                                                             if validar_primeiras_letras(string_teste, letras_desejadas):
                                                                 for c in range(row, len(df_hierarquia)):
                                                                     ColValue = df_hierarquia.at[c, 'Unnamed: 33']
-                                                                    # ColValue = df_hierarquia.at[row, 'Unnamed: 33']
-                                                                    print(ColValue)
-                                                                    print(row)
-                                                                    print(c)
-                                                                    # breakpoint()   
+                                                                    # ColValue = df_hierarquia.at[row, 'Unnamed: 33'] 
                                                                     if not (ColValue is None or (isinstance(ColValue, float) and math.isnan(ColValue))):
-                                                                        print(row)
-                                                                        print(ColValue)
-                                                                        print(valores_projeto_carga)
                                                                         ultimos_tres_caracteres_carga = valores_projeto_carga[-6:]
                                                                         ultimos_tres_caracteres_carga = ultimos_tres_caracteres_carga[:-1]
                                                                         ultimos_tres_caracteres_carga = int(ultimos_tres_caracteres_carga)
@@ -189,6 +182,8 @@ class Hierarquia13Caracteres:
                                                                             df_hierarquia.at[indice[0]-1, 'Unnamed: 1'] = treeCode
                                                                             df_hierarquia.at[indice[0]-1, 'Unnamed: 2'] = treeCodeVersion
                                                                             df_hierarquia.at[indice[0]-1, 'Unnamed: 3'] = treeCodeVersionDate
+                                                                            values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
+                                                                            print("Projeto Incluido com sucesso."+ valores_projeto_carga)
                                                                             break
                                                                         else:
                                                                             print('teste')
@@ -232,6 +227,8 @@ class Hierarquia13Caracteres:
                                                                 df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
                                                                 df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
                                                                 df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
+                                                                values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
+                                                                print("Projeto Incluido com sucesso."+ valores_projeto_carga)
                                                             
                                                             # if primeira_letra.startswith(('CCFJI')): 
                                                             #     teste = int(1999)
@@ -253,7 +250,6 @@ class Hierarquia13Caracteres:
 
                                                                 break
                                                         elif ultimos_tres_caracteres_carga < ultimos_tres_caracteres_ColValue and comparaCaractereP1 == comparaCaractereP2:
-                                                            values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
                                                             indice = df_hierarquia.index[df_hierarquia['Unnamed: 34'] == ColValue].tolist()
  
                                                             df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]], nova_linha, df_hierarquia.iloc[indice[0]:]], ignore_index=True)
@@ -263,6 +259,8 @@ class Hierarquia13Caracteres:
                                                                 df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
                                                                 df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
                                                                 df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
+                                                            values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
+                                                            print("Projeto Incluido com sucesso."+ valores_projeto_carga)
                                                             break
                                                 break
                                             else:
@@ -286,6 +284,7 @@ class Hierarquia13Caracteres:
                                                             ColValueP2 = ColValue 
 
                                                         if ultimos_tres_caracteres_carga == ultimos_tres_caracteres_ColValue:
+                                                            values_to_add.append("O projeto duplicado."+ valores_projeto_carga)
                                                             print("O projeto duplicado.", valores_projeto_carga)
                                                             
                                                             break
@@ -295,16 +294,16 @@ class Hierarquia13Caracteres:
                                                             indice = df_hierarquia.index[df_hierarquia['Unnamed: 33'] == ColValue].tolist()
                                                
                                                             df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]-1], nova_linha, df_hierarquia.iloc[indice[0]-1:]], ignore_index=True)
-                                                            values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
                                                             df_hierarquia.at[indice[0]-1, 'Unnamed: 33'] = valores_projeto_carga
                                                             df_hierarquia.at[indice[0]-1, 'Unnamed: 0'] = setCode
                                                             df_hierarquia.at[indice[0]-1, 'Unnamed: 1'] = treeCode
                                                             df_hierarquia.at[indice[0]-1, 'Unnamed: 2'] = treeCodeVersion
                                                             df_hierarquia.at[indice[0]-1, 'Unnamed: 3'] = treeCodeVersionDate
+                                                            values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
+                                                            print("Projeto Incluido com sucesso."+ valores_projeto_carga)
 
                                                             break
                                                         elif ultimos_tres_caracteres_carga < ultimos_tres_caracteres_ColValue and comparaCaractereP1 == comparaCaractereP2:
-                                                            values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
                                                             indice = df_hierarquia.index[df_hierarquia['Unnamed: 33'] == ColValue].tolist()
 
                                                             df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]], nova_linha, df_hierarquia.iloc[indice[0]:]], ignore_index=True)
@@ -313,6 +312,8 @@ class Hierarquia13Caracteres:
                                                             df_hierarquia.at[indice[0], 'Unnamed: 1'] = treeCode
                                                             df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
                                                             df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
+                                                            values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
+                                                            print("Projeto Incluido com sucesso."+ valores_projeto_carga)
                                                             break
                                                 break
                                     break
@@ -321,7 +322,8 @@ class Hierarquia13Caracteres:
         LogStatus_obj.logar()
 
         # Caminho para o arquivo Excel existente
-        arquivo_excel = 'C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm'
+        # arquivo_excel = 'C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm'
+        arquivo_excel = projeto_hierarquia_excel_path
 
         # Carrega o DataFrame novo com os dados que deseja atualizar
         df_novo = df_hierarquia

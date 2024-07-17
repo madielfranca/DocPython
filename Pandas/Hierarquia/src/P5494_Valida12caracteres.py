@@ -10,14 +10,16 @@ class Hierarquia12Caracteres:
     def __init__(self, projeto_carga_excel_path, projeto_carga_sheet_name, projeto_hierarquia_excel_path, projeto_hierarquia_sheet_name, filename) -> None:
         self.df_carga = pd.read_excel(projeto_carga_excel_path, sheet_name=projeto_carga_sheet_name, header=0)
         self.df_hierarquia = pd.read_excel(projeto_hierarquia_excel_path, sheet_name=projeto_hierarquia_sheet_name, header=0)
+        self.projeto_hierarquia_excel_path = projeto_hierarquia_excel_path
         self.filename = filename
 
     @retry(3, Exception)
     def validar_projetos_12_caracteres(self):
         log.info("Iniciando execução da task Hierarquia 12 caracteres")    
 
-        df_carga = self.df_carga
+        projeto_hierarquia_excel_path = self.projeto_hierarquia_excel_path
         file_name_caraga = self.filename
+        df_carga = self.df_carga
         df_hierarquia = pd.read_excel('C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm', sheet_name='GL_SEGMENT_HIER_INTERFACE', header=0)
         values_to_add  = []
         for row in df_carga.index:
@@ -73,7 +75,6 @@ class Hierarquia12Caracteres:
                                             # Verificando se o parent 3 existe
                                             if ColValue == valores_projeto_carga:
                                                 print("Projeto Incluido com sucesso.", valores_projeto_carga)
-                                                # print('1')
                                                 values_to_add.append("O projeto duplicado."+ valores_projeto_carga)
                                                 break
                                 
@@ -89,7 +90,6 @@ class Hierarquia12Caracteres:
                                                 df_hierarquia.at[indice[0], 'Unnamed: 2'] = treeCodeVersion
                                                 df_hierarquia.at[indice[0], 'Unnamed: 3'] = treeCodeVersionDate
                                                 print("Projeto Incluido com sucesso.", valores_projeto_carga)
-                                                # print('2')
                                                 values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
                                                 contador += 1
 
@@ -99,9 +99,6 @@ class Hierarquia12Caracteres:
                                             elif qtCaracteresParent3 != parent4:
                                                 # Encontre o índice do valor na coluna ''Unnamed: 35''
                                                 indice = df_hierarquia.index[df_hierarquia['Unnamed: 32'] == ColValue].tolist()
-                                                # print(ColValue)
-                                                # print(indice)
-                                                # breakpoint()
                                                 df_hierarquia = pd.concat([df_hierarquia.iloc[:indice[0]+1], nova_linha, df_hierarquia.iloc[indice[0]+1:]], ignore_index=True)
                                                 
                                                 df_hierarquia.at[indice[0]+1, 'Unnamed: 33'] = valores_projeto_carga
@@ -110,7 +107,6 @@ class Hierarquia12Caracteres:
                                                 df_hierarquia.at[indice[0]+1, 'Unnamed: 2'] = treeCodeVersion
                                                 df_hierarquia.at[indice[0]+1, 'Unnamed: 3'] = treeCodeVersionDate
                                                 values_to_add.append("Projeto Incluido com sucesso."+ valores_projeto_carga)
-                                                # print('3')
                                                 print("Projeto Incluido com sucesso.", valores_projeto_carga)
                                                 contador += 1
 
@@ -121,7 +117,7 @@ class Hierarquia12Caracteres:
         LogStatus_obj.logar()
 
         # Caminho para o arquivo Excel existente
-        arquivo_excel = 'C:/Users/madis/Documents/DocPython/Pandas/Hierarquia/files/Hierarquia/PP.OO.9.100 - Hierarquia de Projetos.xlsm'
+        arquivo_excel = projeto_hierarquia_excel_path
 
         # Carrega o DataFrame novo com os dados que deseja atualizar
         df_novo = df_hierarquia
