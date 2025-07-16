@@ -1,0 +1,48 @@
+[
+    {
+        "CODCOLIGADA": 1,
+        "CODIGO": "01.001.001",
+        "DESCRICAO": "Matriz - SP - SAO PAULO - VILA OLIMPIA",
+        "CNPJ": "02.041.460/0001-93",
+        "ENDERECO_RUA": "RUA CASA DO ATOR",
+        "ENDERECO_NUMERO": "919",
+        "ENDERECO_BAIRRO": "VILA OLIMPIA",
+        "ENDERECO_CIDADE": "São Paulo",
+        "ENDERECO_ESTADO": "SP",
+        "ENDERECO_CEP": "04546003",
+        "SECAODESATIVADA": 0,
+        "CODIGO_SINDICATO": "0042",
+        "CODIGO_FILIAL": 1
+    },
+    {
+        "CODCOLIGADA": 1,
+        "CODIGO": "01.001.999",
+        "DESCRICAO": "Expatriado - Matriz - SP - SAO PAULO - VILA OLIMPIA",
+        "CNPJ": "02.041.460/0001-93",
+        "ENDERECO_RUA": "RUA CASA DO ATOR",
+        "ENDERECO_NUMERO": "919",
+        "ENDERECO_BAIRRO": "VILA OLIMPIA",
+        "ENDERECO_CIDADE": "São Paulo",
+        "ENDERECO_ESTADO": "SP",
+        "ENDERECO_CEP": "04546003",
+        "SECAODESATIVADA": 0,
+        "CODIGO_SINDICATO": "0042",
+        "CODIGO_FILIAL": 1
+    },
+    {
+        "CODCOLIGADA": 1,
+        "CODIGO": "01.003.001",
+        "DESCRICAO": "Filial - RJ - RIO DE JANEIRO - CENTRO",
+        "CNPJ": "02.041.460/0003-55",
+        "ENDERECO_RUA": "RIO BRANCO",
+        "ENDERECO_NUMERO": "1",
+        "ENDERECO_COMPLEMENTO": "SALAS 2007, 2008 e 2009",
+        "ENDERECO_BAIRRO": "CENTRO",
+        "ENDERECO_CIDADE": "Rio de Janeiro",
+        "ENDERECO_ESTADO": "RJ",
+        "ENDERECO_CEP": "20090-002",
+        "SECAODESATIVADA": 0,
+        "CODIGO_SINDICATO": "0002",
+        "CODIGO_FILIAL": 3
+    }
+]

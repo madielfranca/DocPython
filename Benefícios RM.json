@@ -1,0 +1,25 @@
+[
+    {
+        "CODCOLIGADA": 1,
+        "CODBENEFICIO": "0001",
+        "NOME": "Auxílio Medicamento (Funcional Card)",
+        "CODTIPOBENEFICIO": "08",
+        "DTINIVIGENCIA": "2023-01-01T00:00:00-03:00"
+    },
+    {
+        "CODCOLIGADA": 1,
+        "CODBENEFICIO": "0502",
+        "NOME": "SULAMÉRICA ODONTO | Executivo",
+        "CODTIPOBENEFICIO": "02",
+        "DTINIVIGENCIA": "2023-01-01T00:00:00-03:00",
+        "VALOR": 17.49
+    },
+    {
+        "CODCOLIGADA": 1,
+        "CODBENEFICIO": "1000",
+        "NOME": "Vale Refeição 100%",
+        "CODTIPOBENEFICIO": "03",
+        "DTINIVIGENCIA": "2023-01-01T00:00:00-03:00"
+    }
+
+]

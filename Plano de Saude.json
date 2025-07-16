@@ -1,0 +1,29 @@
+[
+    {
+        "CODCOLIGADA": 1,
+        "CODCARGO": "0004",
+        "CODBENEFICIO": "482836194",
+        "CODOPERADORA": "003",
+        "NOME_PLANO": "UNIMED CNU | Executivo",
+        "CIDADE": "Lourdes",
+        "UF": "SP"
+    },
+    {
+        "CODCOLIGADA": 1,
+        "CODCARGO": "0004",
+        "CODBENEFICIO": "482836194",
+        "CODOPERADORA": "003",
+        "NOME_PLANO": "UNIMED CNU | Executivo",
+        "CIDADE": "Lorena",
+        "UF": "SP"
+    },
+    {
+        "CODCOLIGADA": 1,
+        "CODCARGO": "0004",
+        "CODBENEFICIO": "482836194",
+        "CODOPERADORA": "003",
+        "NOME_PLANO": "UNIMED CNU | Executivo",
+        "CIDADE": "Lins",
+        "UF": "SP"
+    }
+]

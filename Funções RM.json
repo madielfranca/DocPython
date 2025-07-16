@@ -1,0 +1,29 @@
+[
+    {
+        "CODCOLIGADA": 1,
+        "CODIGO": "996606",
+        "NOME": "ANL GESTAO II",
+        "CARGO": "0010",
+        "MARCAPONTO": "T",
+        "PAGAPERICULOSIDADE": "F",
+        "CODGRPQUIOSQUE": "0002"
+    },
+    {
+        "CODCOLIGADA": 1,
+        "CODIGO": "996612",
+        "NOME": "ESPEC PROCESSOS",
+        "CARGO": "0008",
+        "MARCAPONTO": "F",
+        "PAGAPERICULOSIDADE": "F",
+        "CODGRPQUIOSQUE": "0002"
+    },
+    {
+        "CODCOLIGADA": 1,
+        "CODIGO": "996632",
+        "NOME": "SUPERVISOR OPERACOES",
+        "CARGO": "0007",
+        "MARCAPONTO": "T",
+        "PAGAPERICULOSIDADE": "F",
+        "CODGRPQUIOSQUE": "0001"
+    }
+]
